@@ -25,7 +25,7 @@ const LoginForm = () => {
         password,
       });
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(
         err instanceof Error

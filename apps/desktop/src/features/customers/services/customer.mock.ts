@@ -1,0 +1,38 @@
+import type { Customer } from "../types/customer.types";
+
+export const customers: Customer[] = [
+  {
+    id: "1",
+    customerCode: "CUST-0001",
+    companyName: "ABC Technologies Pvt Ltd",
+    contactPerson: "Rahul Sharma",
+    email: "rahul@abctech.com",
+    phone: "+91 9876543210",
+    gstNumber: "27ABCDE1234F1Z5",
+    address: "Baner Road",
+    city: "Pune",
+    state: "Maharashtra",
+    country: "India",
+    postalCode: "411045",
+    isActive: true,
+    createdAt: "2026-07-01",
+    updatedAt: "2026-07-01",
+  },
+  {
+    id: "2",
+    customerCode: "CUST-0002",
+    companyName: "NextGen Solutions",
+    contactPerson: "Priya Patel",
+    email: "priya@nextgen.com",
+    phone: "+91 9988776655",
+    gstNumber: "24XYZAB5678C1Z2",
+    address: "SG Highway",
+    city: "Ahmedabad",
+    state: "Gujarat",
+    country: "India",
+    postalCode: "380015",
+    isActive: true,
+    createdAt: "2026-07-03",
+    updatedAt: "2026-07-03",
+  },
+];
