@@ -1,26 +1,41 @@
+import {
+  LayoutDashboard,
+  Users,
+  Package,
+  FileText,
+  BarChart3,
+  Settings,
+} from "lucide-react";
+
 export const navigation = [
   {
-    label: "Dashboard",
-    path: "/",
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: LayoutDashboard,
   },
   {
-    label: "Customers",
+    name: "Customers",
     path: "/customers",
+    icon: Users,
   },
   {
-    label: "Products",
+    name: "Products",
     path: "/products",
+    icon: Package,
   },
   {
-    label: "Invoices",
+    name: "Invoices",
     path: "/invoices",
+    icon: FileText,
   },
   {
-    label: "Reports",
+    name: "Reports",
     path: "/reports",
+    icon: BarChart3,
   },
   {
-    label: "Settings",
+    name: "Settings",
     path: "/settings",
+    icon: Settings,
   },
 ];
