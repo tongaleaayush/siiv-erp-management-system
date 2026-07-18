@@ -1,11 +1,9 @@
 import { Plus } from "lucide-react";
 
 import { PageLayout } from "@/components/common/page";
-import { DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui";
 
-import { customerColumns } from "../components/customerColumns";
-import { customers } from "../services/customer.mock";
+import CustomerTable from "../components/CustomerTable";
 
 const CustomersPage = () => {
   return (
@@ -23,10 +21,7 @@ const CustomersPage = () => {
         </Button>
       }
     >
-      <DataTable
-        columns={customerColumns}
-        data={customers}
-      />
+      <CustomerTable />
     </PageLayout>
   );
 };
