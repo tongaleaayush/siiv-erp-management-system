@@ -25,6 +25,7 @@ export const customerColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: "phone",
     header: "Phone",
+    enableSorting: false,
   },
   {
     accessorKey: "city",
@@ -33,6 +34,7 @@ export const customerColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: "isActive",
     header: "Status",
+    enableSorting: false,
     cell: ({ row }) => {
       const isActive = row.original.isActive;
 
@@ -45,6 +47,7 @@ export const customerColumns: ColumnDef<Customer>[] = [
   },
   {
     id: "actions",
+    enableSorting: false,
     header: "Actions",
     cell: () => (
       <div className="flex items-center justify-center gap-3">
