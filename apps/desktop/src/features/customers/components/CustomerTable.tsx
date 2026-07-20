@@ -6,11 +6,20 @@ import {
 } from "@/components/common/table";
 
 import { customerColumns } from "./customerColumns";
-import { customers } from "../services/customer.mock";
+import type { Customer } from "../types/customer.types";
 
-const CustomerTable = () => {
+interface CustomerTableProps {
+  customers: Customer[];
+  onEdit: (customer: Customer) => void;
+}
+
+const CustomerTable = ({
+  customers,
+  onEdit,
+}: CustomerTableProps) => {
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] =
+    useState("all");
 
   const filteredCustomers = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -43,7 +52,15 @@ const CustomerTable = () => {
 
       return matchesSearch && matchesStatus;
     });
-  }, [search, statusFilter]);
+  }, [customers, search, statusFilter]);
+
+  const columns = useMemo(
+    () =>
+      customerColumns({
+        onEdit,
+      }),
+    [onEdit]
+  );
 
   return (
     <>
@@ -56,7 +73,7 @@ const CustomerTable = () => {
       />
 
       <DataTable
-        columns={customerColumns}
+        columns={columns}
         data={filteredCustomers}
       />
     </>

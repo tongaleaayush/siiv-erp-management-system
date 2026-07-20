@@ -342,3 +342,5 @@ export const customers: Customer[] = [
     updatedAt: "2026-07-21",
   },
 ];
+
+export const getNextCustomerNumber = () => customers.length;

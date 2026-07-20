@@ -5,7 +5,17 @@ import { Badge } from "@/components/ui";
 
 import type { Customer } from "../types/customer.types";
 
-export const customerColumns: ColumnDef<Customer>[] = [
+interface CustomerColumnsProps {
+  onView?: (customer: Customer) => void;
+  onEdit?: (customer: Customer) => void;
+  onDelete?: (customer: Customer) => void;
+}
+
+export const customerColumns = ({
+  onView,
+  onEdit,
+  onDelete,
+}: CustomerColumnsProps): ColumnDef<Customer>[] => [
   {
     accessorKey: "customerCode",
     header: "Customer Code",
@@ -49,14 +59,27 @@ export const customerColumns: ColumnDef<Customer>[] = [
     id: "actions",
     enableSorting: false,
     header: "Actions",
-    cell: () => (
-      <div className="flex items-center justify-center gap-3">
-        <Eye className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-blue-600" />
+    cell: ({ row }) => {
+      const customer = row.original;
 
-        <Pencil className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-amber-600" />
+      return (
+        <div className="flex items-center justify-center gap-3">
+          <Eye
+            className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-blue-600"
+            onClick={() => onView?.(customer)}
+          />
 
-        <Trash2 className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-red-600" />
-      </div>
-    ),
+          <Pencil
+            className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-amber-600"
+            onClick={() => onEdit?.(customer)}
+          />
+
+          <Trash2
+            className="h-4 w-4 cursor-pointer text-slate-500 transition-colors hover:text-red-600"
+            onClick={() => onDelete?.(customer)}
+          />
+        </div>
+      );
+    },
   },
 ];

@@ -1,26 +1,36 @@
-import type { InputHTMLAttributes } from "react";
+import type { SelectHTMLAttributes } from "react";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
+export interface SelectOption {
+  value: string;
+  label: string;
 }
 
-const Input = ({
+interface SelectProps
+  extends SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  error?: string;
+  options: SelectOption[];
+  placeholder?: string;
+}
+
+function Select({
   label,
   error,
+  options,
+  placeholder = "Select an option",
   className = "",
   id,
   name,
   required,
   ...props
-}: InputProps) => {
-  const inputId = id ?? name;
+}: SelectProps) {
+  const selectId = id ?? name;
 
   return (
     <div className="flex flex-col gap-1">
       {label && (
         <label
-          htmlFor={inputId}
+          htmlFor={selectId}
           className="text-sm font-medium text-slate-700"
         >
           {label}
@@ -31,18 +41,20 @@ const Input = ({
         </label>
       )}
 
-      <input
-        id={inputId}
+      <select
+        id={selectId}
         name={name}
         required={required}
         aria-invalid={!!error}
         className={`
           rounded-lg
           border
+          bg-white
           px-3
           py-2
           outline-none
           transition-colors
+          focus:ring-2
 
           ${
             error
@@ -50,20 +62,31 @@ const Input = ({
               : "border-slate-300 focus:border-blue-500 focus:ring-blue-200"
           }
 
-          focus:ring-2
-
           ${className}
         `}
         {...props}
-      />
+      >
+        <option value="">
+          {placeholder}
+        </option>
+
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
 
       {error && (
-        <span className="text-sm text-red-600">
+        <p className="mt-1 text-sm text-red-500">
           {error}
-        </span>
+        </p>
       )}
     </div>
   );
-};
+}
 
-export default Input;
+export default Select;
