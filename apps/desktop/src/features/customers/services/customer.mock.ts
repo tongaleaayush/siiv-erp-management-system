@@ -1,3 +1,4 @@
+import { getNextCode } from "@/utils/codeGenerator/getNextCode";
 import type { Customer } from "../types/customer.types";
 
 export const customers: Customer[] = [
@@ -343,4 +344,4 @@ export const customers: Customer[] = [
   },
 ];
 
-export const getNextCustomerNumber = () => customers.length;
+getNextCode(customers, "CUST")

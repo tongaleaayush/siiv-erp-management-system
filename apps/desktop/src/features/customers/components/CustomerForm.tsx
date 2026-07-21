@@ -1,8 +1,6 @@
 import { countryCodeService } from "@/services/countryCode.service";
 import type { CustomerFormData } from "../types/customerForm";
 import Input from "@/components/ui/Input";
-import { generateCustomerCode } from "../utils/generateCustomerCode";
-import { getNextCustomerNumber } from "../services/customer.mock";
 import { validateEmail } from "@/utils/validation/email.validation";
 import {
   forwardRef,
@@ -20,12 +18,15 @@ import {
 } from "@/utils/validation/customer.validation";
 interface CustomerFormProps {
   open: boolean;
+  customerCode?: string;
+  initialData?: CustomerFormData;
 }
 
 
-
-const createInitialFormData = (): CustomerFormData => ({
-  customerCode: generateCustomerCode(getNextCustomerNumber()),
+const createInitialFormData = (
+  customerCode = ""
+): CustomerFormData => ({
+  customerCode,
   companyName: "",
 
   contactPerson: "",
@@ -50,19 +51,25 @@ export interface CustomerFormRef {
   getFormData: () => CustomerFormData;
 }
 
-const CustomerForm = forwardRef<CustomerFormRef, CustomerFormProps>(({ open }, ref) => {
+const CustomerForm = forwardRef<CustomerFormRef, CustomerFormProps>(
+  ({ open, customerCode, initialData }, ref) => {
   const [formData, setFormData] = useState<CustomerFormData>(
-    createInitialFormData()
+    createInitialFormData(customerCode)
   );
 const [postalCodeError, setPostalCodeError] = useState("");
 const [errors, setErrors] = useState<CustomerValidationErrors>({});
  useEffect(() => {
-  if (open) {
-    setFormData(createInitialFormData());
-    setErrors({});
-    setPostalCodeError("");
+  if (!open) return;
+
+  if (initialData) {
+    setFormData(initialData);
+  } else {
+    setFormData(createInitialFormData(customerCode));
   }
-}, [open]);
+
+  setErrors({});
+  setPostalCodeError("");
+}, [open, initialData, customerCode]);
 const countryCodeOptions = useMemo(
   () => countryCodeService.getCountryCodeOptions(),
   []
@@ -213,6 +220,10 @@ setFormData((prev) => ({
 };
 const validateForm = () => {
   const validationErrors = validateCustomer(formData);
+
+  if (postalCodeError) {
+    validationErrors.postalCode = postalCodeError;
+  }
 
   setErrors(validationErrors);
 

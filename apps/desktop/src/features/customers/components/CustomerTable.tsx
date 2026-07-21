@@ -10,12 +10,16 @@ import type { Customer } from "../types/customer.types";
 
 interface CustomerTableProps {
   customers: Customer[];
+  onView: (customer: Customer) => void;
   onEdit: (customer: Customer) => void;
+  onDelete: (customer: Customer) => void;
 }
 
 const CustomerTable = ({
   customers,
+  onView,
   onEdit,
+  onDelete,
 }: CustomerTableProps) => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
@@ -57,9 +61,11 @@ const CustomerTable = ({
   const columns = useMemo(
     () =>
       customerColumns({
+        onView,
         onEdit,
+        onDelete,
       }),
-    [onEdit]
+    [onView, onEdit, onDelete]
   );
 
   return (

@@ -9,19 +9,19 @@ import CustomerForm, {
 
 import type { CustomerFormData } from "../types/customerForm";
 
-interface AddCustomerDialogProps {
+interface EditCustomerDialogProps {
   open: boolean;
-  customerCode: string;
+  initialData: CustomerFormData;
   onClose: () => void;
   onSave: (customer: CustomerFormData) => void;
 }
 
-function AddCustomerDialog({
+function EditCustomerDialog({
   open,
-  customerCode,
+  initialData,
   onClose,
   onSave,
-}: AddCustomerDialogProps) {
+}: EditCustomerDialogProps) {
   const customerFormRef =
     useRef<CustomerFormRef>(null);
 
@@ -44,7 +44,7 @@ function AddCustomerDialog({
   return (
     <Dialog
       open={open}
-      title="Add Customer"
+      title="Edit Customer"
       onClose={onClose}
       footer={
         <div className="flex justify-end gap-3">
@@ -56,18 +56,18 @@ function AddCustomerDialog({
           </Button>
 
           <Button onClick={handleSave}>
-            Save Customer
+            Update Customer
           </Button>
         </div>
       }
     >
       <CustomerForm
-  ref={customerFormRef}
-  open={open}
-  customerCode={customerCode}
-/>
+        ref={customerFormRef}
+        open={open}
+        initialData={initialData}
+      />
     </Dialog>
   );
 }
 
-export default AddCustomerDialog;
+export default EditCustomerDialog;
