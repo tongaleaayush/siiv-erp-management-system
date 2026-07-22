@@ -1,6 +1,7 @@
 import type { CustomerFormData } from "@/features/customers/types/customerForm";
 import { validateEmail } from "./email.validation";
 import { validateGST } from "./gst.validation";
+
 export interface CustomerValidationErrors {
   companyName?: string;
   contactPerson?: string;
@@ -10,7 +11,8 @@ export interface CustomerValidationErrors {
   country?: string;
   state?: string;
   city?: string;
-  address?: string;
+  addressLine1?: string;
+  addressLine2?: string;
   gstNumber?: string;
 }
 
@@ -27,11 +29,11 @@ export const validateCustomer = (
     errors.contactPerson = "Contact person is required.";
   }
 
- const emailError = validateEmail(data.email);
+  const emailError = validateEmail(data.email);
 
-if (emailError) {
-  errors.email = emailError;
-}
+  if (emailError) {
+    errors.email = emailError;
+  }
 
   if (!data.phone.trim()) {
     errors.phone = "Phone number is required.";
@@ -55,13 +57,15 @@ if (emailError) {
     errors.city = "City is required.";
   }
 
-  if (!data.address.trim()) {
-    errors.address = "Address is required.";
+  if (!data.addressLine1.trim()) {
+    errors.addressLine1 = "Address Line 1 is required.";
   }
-const gstError = validateGST(data.gstNumber);
 
-if (gstError) {
-  errors.gstNumber = gstError;
-}
+  const gstError = validateGST(data.gstNumber);
+
+  if (gstError) {
+    errors.gstNumber = gstError;
+  }
+
   return errors;
 };

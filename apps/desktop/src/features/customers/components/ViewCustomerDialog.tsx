@@ -98,37 +98,48 @@ const ViewCustomerDialog = ({
           />
         </section>
 
-        {/* Address */}
-        <section>
-          <h3 className="mb-3 text-lg font-semibold">
-            Address Information
-          </h3>
+       {/* Address */}
+<section>
+  <h3 className="mb-3 text-lg font-semibold">
+    Address Information
+  </h3>
 
-          <InfoRow
-            label="Country"
-            value={customer.country}
-          />
+  <InfoRow
+    label="Country"
+    value={customer.country}
+  />
 
-          <InfoRow
-            label="State"
-            value={customer.state}
-          />
+  <InfoRow
+    label="State"
+    value={customer.state}
+  />
 
-          <InfoRow
-            label="City"
-            value={customer.city}
-          />
+  <InfoRow
+    label="City"
+    value={customer.city}
+  />
 
-          <InfoRow
-            label="Postal Code"
-            value={customer.postalCode}
-          />
+  <InfoRow
+    label="Postal Code"
+    value={customer.postalCode}
+  />
 
-          <InfoRow
-            label="Address"
-            value={customer.address}
-          />
-        </section>
+  <InfoRow
+    label="Address Line 1"
+    value={customer.addressLine1}
+  />
+
+  <InfoRow
+    label="Address Line 2"
+    value={
+      customer.addressLine2 || (
+        <span className="text-muted-foreground">
+          -
+        </span>
+      )
+    }
+  />
+</section>
 
         {/* Business */}
         <section>

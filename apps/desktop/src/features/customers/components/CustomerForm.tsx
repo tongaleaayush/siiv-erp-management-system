@@ -37,7 +37,8 @@ phone: "",
 
   gstNumber: "",
 
-  address: "",
+  addressLine1: "",
+addressLine2: "",
 
   city: "",
   state: "",
@@ -377,16 +378,26 @@ useImperativeHandle(ref, () => ({
     />
   </div>
 
-  <div className="mt-4">
-    <Input
-      label="Address"
-      name="address"
-      value={formData.address}
-      onChange={handleInputChange}
-      placeholder="Enter street, building, area, landmark..."
-      error={errors.address}
-    />
-  </div>
+  <div className="mt-4 grid grid-cols-1 gap-4">
+  <Input
+    label="Address Line 1"
+    name="addressLine1"
+    value={formData.addressLine1}
+    onChange={handleInputChange}
+    placeholder="House No., Building, Street"
+    error={errors.addressLine1}
+    required
+  />
+
+  <Input
+    label="Address Line 2"
+    name="addressLine2"
+    value={formData.addressLine2}
+    onChange={handleInputChange}
+    placeholder="Area, Landmark (Optional)"
+    error={errors.addressLine2}
+  />
+</div>
 </section>
 {/* Business Information */}
 <section>

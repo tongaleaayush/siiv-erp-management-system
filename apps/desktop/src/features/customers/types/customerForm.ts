@@ -5,10 +5,12 @@ export interface CustomerFormData {
   contactPerson: string;
   email: string;
   countryCode: string;
-phone: string;
+  phone: string;
+
   gstNumber: string;
 
-  address: string;
+  addressLine1: string;
+  addressLine2: string;
 
   city: string;
   state: string;

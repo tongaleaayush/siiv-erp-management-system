@@ -2,7 +2,8 @@ import {
   exportService,
   generateExportFileName,
 } from "@/services/export";
-
+import { ChevronDown } from "lucide-react";
+import type { ExportFormat } from "@/services/export";
 import { Button } from "@/components/ui";
 import { Dropdown } from "@/components/ui/dropdown";
 
@@ -15,34 +16,46 @@ export default function ExportButton<
   data,
   columns,
 }: ExportButtonProps<T>) {
-  const handleExport = async () => {
-    await exportService.export({
-      format: "csv",
-      fileName: generateExportFileName(moduleName),
-      data,
-      columns,
-    });
-  };
+  const handleExport = async (
+  format: ExportFormat,
+) => {
+  await exportService.export({
+    format,
+    fileName: generateExportFileName(moduleName),
+    data,
+    columns,
+  });
+};
 
   return (
   <Dropdown
-    trigger={
-      <Button variant="outline">
-        Export
-      </Button>
-    }
+    trigger={(isOpen) => (
+  <Button
+    variant="outline"
+    className="inline-flex items-center gap-2 px-4"
+  >
+    <span>Export</span>
+
+    <ChevronDown
+      size={16}
+      className={`transition-transform duration-200 ${
+        isOpen ? "rotate-180" : ""
+      }`}
+    />
+  </Button>
+)}
     items={[
       {
-        label: "Export as CSV",
-        onClick: handleExport,
-      },
-      {
-        label: "Export as Excel",
-        disabled: true,
-      },
+  label: "Export as CSV",
+  onClick: () => handleExport("csv"),
+},
+{
+  label: "Export as Excel",
+  onClick: () => handleExport("excel"),
+},
       {
         label: "Export as PDF",
-        disabled: true,
+        onClick: () => handleExport("pdf"),
       },
     ]}
   />
