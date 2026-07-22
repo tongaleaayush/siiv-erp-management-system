@@ -19,7 +19,8 @@ export function mapCustomerToFormData(
 
     gstNumber: customer.gstNumber,
 
-    address: customer.address,
+    addressLine1: customer.addressLine1,
+addressLine2: customer.addressLine2,
     city: customer.city,
     state: customer.state,
     country: customer.country,

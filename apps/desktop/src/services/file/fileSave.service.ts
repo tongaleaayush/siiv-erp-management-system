@@ -1,5 +1,8 @@
 import { save } from "@tauri-apps/plugin-dialog";
-import { writeTextFile } from "@tauri-apps/plugin-fs";
+import {
+  writeFile,
+  writeTextFile,
+} from "@tauri-apps/plugin-fs";
 
 export interface SaveTextFileOptions {
   defaultPath: string;
@@ -10,30 +13,53 @@ export interface SaveTextFileOptions {
   }[];
 }
 
+export interface SaveBinaryFileOptions {
+  defaultPath: string;
+  content: ArrayBuffer;
+  filters?: {
+    name: string;
+    extensions: string[];
+  }[];
+}
+
 class FileSaveService {
   async saveTextFile({
-  defaultPath,
-  content,
-  filters,
-}: SaveTextFileOptions): Promise<string | null> {
-
-  console.log("Opening save dialog...");
-
-  const filePath = await save({
     defaultPath,
+    content,
     filters,
-  });
+  }: SaveTextFileOptions): Promise<string | null> {
+    const filePath = await save({
+      defaultPath,
+      filters,
+    });
 
-  console.log("Selected path:", filePath);
+    if (!filePath) {
+      return null;
+    }
 
-  if (!filePath) {
-    return null;
+    await writeTextFile(filePath, content);
+
+    return filePath;
   }
 
-  await writeTextFile(filePath, content);
+  async saveBinaryFile({
+    defaultPath,
+    content,
+    filters,
+  }: SaveBinaryFileOptions): Promise<string | null> {
+    const filePath = await save({
+      defaultPath,
+      filters,
+    });
 
-  return filePath;
-}
+    if (!filePath) {
+      return null;
+    }
+
+    await writeFile(filePath, new Uint8Array(content));
+
+    return filePath;
+  }
 }
 
 export const fileSaveService = new FileSaveService();

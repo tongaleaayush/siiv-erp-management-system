@@ -1,6 +1,7 @@
 // src/services/export/export.service.ts
-
+import { ExcelExporter } from "./exporters/excelExporter";
 import { CsvExporter } from "./exporters/csvExporter";
+import { PdfExporter } from "./exporters/pdfExporter";
 import type {
   Exporter,
   ExportFormat,
@@ -14,18 +15,10 @@ class ExportService {
     this.exporters = {
       csv: new CsvExporter(),
 
-      // Will be implemented later
-      excel: {
-        export: async () => {
-          throw new Error("Excel export is not implemented yet.");
-        },
-      },
 
-      pdf: {
-        export: async () => {
-          throw new Error("PDF export is not implemented yet.");
-        },
-      },
+      excel: new ExcelExporter(),
+
+      pdf: new PdfExporter(),
     };
   }
 

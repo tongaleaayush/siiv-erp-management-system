@@ -58,11 +58,12 @@ const CustomersPage = () => {
 
       gstNumber: customerData.gstNumber,
 
-      address: customerData.address,
-      city: customerData.city,
-      state: customerData.state,
-      country: customerData.country,
-      postalCode: customerData.postalCode,
+addressLine1: customerData.addressLine1,
+addressLine2: customerData.addressLine2,
+city: customerData.city,
+state: customerData.state,
+country: customerData.country,
+postalCode: customerData.postalCode,
 
       isActive: true,
 
@@ -96,11 +97,12 @@ const CustomersPage = () => {
 
               gstNumber: customerData.gstNumber,
 
-              address: customerData.address,
-              city: customerData.city,
-              state: customerData.state,
-              country: customerData.country,
-              postalCode: customerData.postalCode,
+addressLine1: customerData.addressLine1,
+addressLine2: customerData.addressLine2,
+city: customerData.city,
+state: customerData.state,
+country: customerData.country,
+postalCode: customerData.postalCode,
 
               isActive:
                 customerData.status === "Active",

@@ -7,9 +7,13 @@ export const customerExportColumns: ExportColumn<Customer>[] = [
     key: "customerCode",
   },
   {
-    header: "Customer Name",
-    key: "name",
-  },
+  header: "Company Name",
+  key: "companyName",
+},
+{
+  header: "Contact Person",
+  key: "contactPerson",
+},
   {
     header: "Email",
     key: "email",

@@ -9,6 +9,6 @@ export interface DropdownItem {
 }
 
 export interface DropdownProps {
-  trigger: ReactNode;
+  trigger: (isOpen: boolean) => ReactNode;
   items: DropdownItem[];
 }

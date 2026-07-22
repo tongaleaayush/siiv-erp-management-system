@@ -13,7 +13,9 @@ export interface Customer {
 
   gstNumber?: string;
 
-  address: string;
+  addressLine1: string;
+
+  addressLine2: string;
 
   city: string;
 
