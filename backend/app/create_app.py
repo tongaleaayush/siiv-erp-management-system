@@ -1,9 +1,11 @@
 from flask import Flask
 
 import app.auth
+import app.customer
 
 from config import DevelopmentConfig
 from app.api import register_namespaces
+from app.commands import seed_command
 from app.core.extensions import api, cors, db, jwt, ma, migrate
 from app.exceptions.handlers import register_error_handlers
 
@@ -22,5 +24,7 @@ def create_app():
 
     register_namespaces(api)
     register_error_handlers(app)
+
+    app.cli.add_command(seed_command)
 
     return app
