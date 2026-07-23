@@ -13,43 +13,27 @@ export class ExcelExporter implements Exporter {
 
     const workbook = new ExcelJS.Workbook();
 
-    workbook.creator = "SIIV ERP";
+    workbook.creator = "SIIV ERP Management System";
+    workbook.company = "SIIV Innovations";
     workbook.created = new Date();
+    workbook.modified = new Date();
 
-    const worksheet = workbook.addWorksheet("Sheet1");
+    const worksheet = workbook.addWorksheet("Products", {
+      properties: {
+        defaultRowHeight: 22,
+      },
+      views: [
+        {
+          state: "frozen",
+          ySplit: 1,
+        },
+      ],
+    });
 
-    worksheet.columns = columns.map((column) => ({
-      header: column.header,
-      key: String(column.key),
-      width: 20,
-    }));
-
-   data.forEach((row) => {
-  console.log("Row:", row);
-
-  const rowData: Record<string, unknown> = {};
-
-  columns.forEach((column) => {
-    const value = row[column.key];
-
-    console.log("Column:", column.key);
-    console.log("Value:", value);
-
-    rowData[String(column.key)] = column.formatter
-      ? column.formatter(value, row)
-      : value ?? "";
-  });
-
-  console.log("Excel Row Data:", rowData);
-
-  worksheet.addRow(rowData);
-});
-
-    // -----------------------------
-    // Header Styling
-    // -----------------------------
-
-    const headerRow = worksheet.getRow(1);
+    // Header Row
+    const headerRow = worksheet.addRow(
+      columns.map((column) => column.header),
+    );
 
     headerRow.height = 24;
 
@@ -65,74 +49,115 @@ export class ExcelExporter implements Exporter {
         type: "pattern",
         pattern: "solid",
         fgColor: {
-          argb: "FF2563EB", // Tailwind Blue-600
+          argb: "FF1F4E78",
         },
       };
 
       cell.alignment = {
-        horizontal: "center",
         vertical: "middle",
+        horizontal: "center",
       };
 
       cell.border = {
-        top: { style: "thin" },
-        bottom: { style: "thin" },
-        left: { style: "thin" },
-        right: { style: "thin" },
+        top: {
+          style: "thin",
+        },
+        left: {
+          style: "thin",
+        },
+        bottom: {
+          style: "thin",
+        },
+        right: {
+          style: "thin",
+        },
       };
     });
 
-    // -----------------------------
-    // Body Styling
-    // -----------------------------
+    // Data Rows
+    data.forEach((row) => {
+      const values = columns.map((column) =>
+        column.accessor(row),
+      );
 
-    worksheet.eachRow((row, rowNumber) => {
-      if (rowNumber === 1) return;
+      const excelRow = worksheet.addRow(values);
 
-      row.eachCell((cell) => {
+      excelRow.eachCell((cell) => {
         cell.alignment = {
           vertical: "middle",
+          horizontal:
+            typeof cell.value === "number"
+              ? "right"
+              : "left",
         };
 
         cell.border = {
-          top: { style: "thin" },
-          bottom: { style: "thin" },
-          left: { style: "thin" },
-          right: { style: "thin" },
+          top: {
+            style: "thin",
+          },
+          left: {
+            style: "thin",
+          },
+          bottom: {
+            style: "thin",
+          },
+          right: {
+            style: "thin",
+          },
         };
       });
     });
 
-    // -----------------------------
-    // Freeze Header Row
-    // -----------------------------
-
-    worksheet.views = [
-      {
-        state: "frozen",
-        ySplit: 1,
+    // Auto Filter
+    worksheet.autoFilter = {
+      from: {
+        row: 1,
+        column: 1,
       },
-    ];
+      to: {
+        row: 1,
+        column: columns.length,
+      },
+    };
 
-    // -----------------------------
-    // Auto-size Columns
-    // -----------------------------
-
+    // Auto-fit Columns
     worksheet.columns.forEach((column) => {
-      let maxLength = 10;
+      let maxLength = 12;
 
-      column.eachCell?.({ includeEmpty: true }, (cell) => {
-        const length = cell.value
-          ? cell.value.toString().length
-          : 0;
+      column.eachCell?.(
+        {
+          includeEmpty: true,
+        },
+        (cell) => {
+          const value =
+            cell.value?.toString() ?? "";
 
-        if (length > maxLength) {
-          maxLength = length;
-        }
-      });
+          maxLength = Math.max(
+            maxLength,
+            value.length + 2,
+          );
+        },
+      );
 
-      column.width = Math.min(maxLength + 4, 40);
+      column.width = Math.min(maxLength, 40);
     });
+
+    // Print Settings
+    worksheet.pageSetup = {
+      orientation: "landscape",
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 0,
+      paperSize: 9,
+      margins: {
+        left: 0.3,
+        right: 0.3,
+        top: 0.5,
+        bottom: 0.5,
+        header: 0.3,
+        footer: 0.3,
+      },
+    };
 
     const buffer = await workbook.xlsx.writeBuffer();
 
@@ -141,7 +166,7 @@ export class ExcelExporter implements Exporter {
       content: buffer,
       filters: [
         {
-          name: "Excel",
+          name: "Excel Workbook",
           extensions: ["xlsx"],
         },
       ],

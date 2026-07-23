@@ -6,20 +6,15 @@ import type {
 
 export class CsvExporter implements Exporter {
   async export<T>(options: ExportOptions<T>): Promise<void> {
-    console.log("CsvExporter started");
     const { columns, data, fileName } = options;
 
     const headers = columns.map((column) => column.header);
 
     const rows = data.map((row) =>
       columns.map((column) => {
-        const value = row[column.key];
+        const value = column.accessor(row);
 
-        const formatted = column.formatter
-          ? column.formatter(value, row)
-          : value;
-
-        return this.escapeValue(formatted);
+        return this.escapeValue(value);
       }),
     );
 
@@ -29,15 +24,15 @@ export class CsvExporter implements Exporter {
     ].join("\n");
 
     await fileSaveService.saveTextFile({
-  defaultPath: `${fileName}.csv`,
-  content: csvContent,
-  filters: [
-    {
-      name: "CSV",
-      extensions: ["csv"],
-    },
-  ],
-});
+      defaultPath: `${fileName}.csv`,
+      content: csvContent,
+      filters: [
+        {
+          name: "CSV",
+          extensions: ["csv"],
+        },
+      ],
+    });
   }
 
   private escapeValue(value: unknown): string {

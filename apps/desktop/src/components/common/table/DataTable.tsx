@@ -49,15 +49,15 @@ function DataTable<TData>({
   return (
     <div className="rounded-xl border border-slate-200 bg-white">
       {/* Scrollable Table */}
-      <div className="max-h-[600px] overflow-auto">
-        <table className="min-w-max w-full">
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
           <thead className="sticky top-0 z-10 bg-slate-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
+                    className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
                   >
                     {header.isPlaceholder ? null : header.column.getCanSort() ? (
                       <button
@@ -102,7 +102,7 @@ function DataTable<TData>({
         {row.getVisibleCells().map((cell) => (
           <td
             key={cell.id}
-            className="px-6 py-4 text-sm text-slate-700"
+            className="align-top px-6 py-3 text-sm text-slate-700"
           >
             {flexRender(
               cell.column.columnDef.cell,

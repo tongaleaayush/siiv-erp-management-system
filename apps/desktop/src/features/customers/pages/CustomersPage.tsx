@@ -38,7 +38,11 @@ const CustomersPage = () => {
     customerService.getCustomers()
   );
   const [nextCustomerCode, setNextCustomerCode] =
-  useState(getNextCode(customers, "CUST"));
+  useState(getNextCode(
+  customers,
+  "CUST",
+  "customerCode"
+));
 
   const handleAddCustomer = (
     customerData: CustomerFormData
@@ -169,7 +173,11 @@ postalCode: customerData.postalCode,
     <Button
       onClick={() => {
         setNextCustomerCode(
-          getNextCode(customers, "CUST")
+          getNextCode(
+  customers,
+  "CUST",
+  "customerCode"
+)
         );
 
         setIsAddCustomerDialogOpen(true);

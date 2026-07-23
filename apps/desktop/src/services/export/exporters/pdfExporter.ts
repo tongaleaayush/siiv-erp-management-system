@@ -9,107 +9,34 @@ import type {
 } from "../types";
 
 export class PdfExporter implements Exporter {
-  async export<T>(
-    options: ExportOptions<T>,
-  ): Promise<void> {
-    const {
-      columns,
-      data,
-      fileName,
-    } = options;
+  async export<T>(options: ExportOptions<T>): Promise<void> {
+    const { columns, data, fileName } = options;
 
-    const doc = new jsPDF({
-      orientation:
-        columns.length > 6
-          ? "landscape"
-          : "portrait",
-      unit: "mm",
-      format: "a4",
-    });
-
-    // ----------------------------------
-    // Title
-    // ----------------------------------
-
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text(fileName, 14, 18);
-
-    // ----------------------------------
-    // Generated Date
-    // ----------------------------------
-
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-
-    doc.text(
-      `Generated: ${new Date().toLocaleString()}`,
-      14,
-      26,
-    );
-
-    // ----------------------------------
-    // Table
-    // ----------------------------------
+    const doc = new jsPDF();
 
     autoTable(doc, {
-      startY: 34,
-
       head: [
         columns.map((column) => column.header),
       ],
-
       body: data.map((row) =>
-        columns.map((column) => {
-          const value = row[column.key];
-
-          return column.formatter
-            ? column.formatter(value, row)
-            : value ?? "";
-        }),
+        columns.map((column) =>
+          String(column.accessor(row) ?? "")
+        ),
       ),
-
-      theme: "grid",
-
-      headStyles: {
-        fillColor: [37, 99, 235],
-        textColor: 255,
-        fontStyle: "bold",
-      },
-
       styles: {
-        fontSize: 10,
-        cellPadding: 3,
+        fontSize: 9,
       },
-
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
       },
     });
 
-    // ----------------------------------
-    // Page Numbers
-    // ----------------------------------
-
-    const pages = doc.getNumberOfPages();
-
-    for (let i = 1; i <= pages; i++) {
-      doc.setPage(i);
-
-      doc.setFontSize(10);
-
-      doc.text(
-        `Page ${i} of ${pages}`,
-        doc.internal.pageSize.getWidth() - 35,
-        doc.internal.pageSize.getHeight() - 10,
-      );
-    }
-
-    const pdfBytes = doc.output("arraybuffer");
+    const buffer = doc.output("arraybuffer");
 
     await fileSaveService.saveBinaryFile({
       defaultPath: `${fileName}.pdf`,
-      content: pdfBytes,
+      content: buffer,
       filters: [
         {
           name: "PDF",

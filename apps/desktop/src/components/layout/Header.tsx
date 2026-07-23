@@ -20,11 +20,11 @@ const isExpanded = mode === "expanded";
           onClick={toggleSidebar}
           className="rounded-lg p-2 transition hover:bg-slate-100"
           aria-label={
-            isExpanded ? "Expand Sidebar" : "Collapse Sidebar"
-          }
-          title={
-            isExpanded ? "Expand Sidebar" : "Collapse Sidebar"
-          }
+  isExpanded ? "Collapse Sidebar" : "Expand Sidebar"
+}
+title={
+  isExpanded ? "Collapse Sidebar" : "Expand Sidebar"
+}
         >
           <PanelLeft className="h-5 w-5 text-slate-700" />
         </button>

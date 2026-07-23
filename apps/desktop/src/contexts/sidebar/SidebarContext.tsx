@@ -1,7 +1,6 @@
 import {
   createContext,
   useCallback,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -14,7 +13,6 @@ interface SidebarContextType {
 
   isExpanded: boolean;
   isCollapsed: boolean;
-  isHidden: boolean;
 
   setMode: (mode: SidebarMode) => void;
 
@@ -28,45 +26,23 @@ interface SidebarProviderProps {
   children: ReactNode;
 }
 
-function getSidebarMode(width: number): SidebarMode {
-  if (width < 900) return "hidden";
-
-  if (width < 1200) return "collapsed";
-
-  return "expanded";
+function getSidebarMode(): SidebarMode {
+  return "collapsed";
 }
 
 export function SidebarProvider({
   children,
 }: SidebarProviderProps) {
-  const [mode, setMode] = useState<SidebarMode>(() =>
-    getSidebarMode(window.innerWidth),
+  const [mode, setMode] = useState<SidebarMode>(
+    getSidebarMode,
   );
 
-  useEffect(() => {
-    const handleResize = () => {
-      setMode(getSidebarMode(window.innerWidth));
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () =>
-      window.removeEventListener("resize", handleResize);
-  }, []);
-
   const toggleSidebar = useCallback(() => {
-    setMode((previous) => {
-      switch (previous) {
-        case "expanded":
-          return "collapsed";
-
-        case "collapsed":
-          return "expanded";
-
-        case "hidden":
-          return "expanded";
-      }
-    });
+    setMode((previous) =>
+      previous === "expanded"
+        ? "collapsed"
+        : "expanded",
+    );
   }, []);
 
   const value = useMemo(
@@ -75,7 +51,6 @@ export function SidebarProvider({
 
       isExpanded: mode === "expanded",
       isCollapsed: mode === "collapsed",
-      isHidden: mode === "hidden",
 
       setMode,
 

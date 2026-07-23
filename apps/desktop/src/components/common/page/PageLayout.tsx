@@ -21,7 +21,7 @@ const PageLayout = ({
   children,
 }: PageLayoutProps) => {
   return (
-    <div className="mx-auto w-full max-w-7xl p-6">
+    <div className="w-full px-6 py-5">
       {breadcrumb && (
         <Breadcrumb items={breadcrumb} />
       )}

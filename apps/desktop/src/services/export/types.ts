@@ -9,14 +9,9 @@ export interface ExportColumn<T = Record<string, unknown>> {
   header: string;
 
   /**
-   * Object key to export.
+   * Returns the value to export for a row.
    */
-  key: keyof T;
-
-  /**
-   * Optional custom formatter.
-   */
-  formatter?: (value: T[keyof T], row: T) => string | number;
+  accessor: (row: T) => unknown;
 }
 
 export interface ExportOptions<T = Record<string, unknown>> {

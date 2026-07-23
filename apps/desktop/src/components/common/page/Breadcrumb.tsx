@@ -10,7 +10,7 @@ interface BreadcrumbProps {
 
 const Breadcrumb = ({ items }: BreadcrumbProps) => {
   return (
-    <nav className="mb-4 flex items-center text-sm text-slate-500">
+    <nav className="mb-2 flex items-center text-sm text-slate-500">
       {items.map((item, index) => (
         <div
           key={item.label}
