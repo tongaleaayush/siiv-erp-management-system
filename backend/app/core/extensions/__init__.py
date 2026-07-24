@@ -17,4 +17,17 @@ api = Api(
     description="RESTful API for the SIIV ERP Management System",
     doc="/docs",
     prefix="/api",
+    authorizations={
+        "Bearer": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": (
+                "Enter your JWT Access Token.\n\n"
+                "Example:\n"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            ),
+        }
+    },
+    security="Bearer",
 )

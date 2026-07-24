@@ -1,6 +1,12 @@
 from flask import request
+
+from flask_jwt_extended import (
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_restx import Namespace, Resource, fields
 
+from app.auth.decorators import permission_required
 from app.auth.schemas import (
     UserCreateSchema,
     UserLoginSchema,
@@ -133,5 +139,62 @@ class LoginResource(Resource):
                 "access_token": auth_data["access_token"],
                 "refresh_token": auth_data["refresh_token"],
             },
+            status_code=200,
+        )
+
+
+# =====================================================
+# Current User API
+# =====================================================
+
+@auth_ns.route("/me")
+class CurrentUserResource(Resource):
+
+    @jwt_required()
+    @auth_ns.doc(
+        description="Get the currently authenticated user.",
+        security="Bearer",
+        responses={
+            200: "User retrieved successfully.",
+            401: "Unauthorized.",
+            404: "User not found.",
+        },
+    )
+    def get(self):
+        """
+        Get the currently authenticated user.
+        """
+
+        user_id = int(get_jwt_identity())
+
+        user = UserService.get_current_user(user_id)
+
+        return success_response(
+            message="User retrieved successfully.",
+            data=response_schema.dump(user),
+            status_code=200,
+        )
+
+
+# =====================================================
+# Permission Test API
+# =====================================================
+
+@auth_ns.route("/permission-test")
+class PermissionTestResource(Resource):
+
+    @permission_required("this.permission.does.not.exist")
+    @auth_ns.doc(
+        description="Test RBAC permission checking.",
+        security="Bearer",
+    )
+    def get(self):
+        """
+        Permission test endpoint.
+        """
+
+        return success_response(
+            message="Permission check passed.",
+            data=None,
             status_code=200,
         )
