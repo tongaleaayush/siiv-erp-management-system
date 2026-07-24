@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import CustomersPage from "@/features/customers/pages/CustomersPage";
 import ProductsPage from "@/features/products/pages/ProductsPage";
+import InventoryPage from "@/features/inventory/pages/InventoryPage";
 import MainLayout from "@/layouts/MainLayout";
 
 export const protectedRoutes: RouteObject[] = [
@@ -49,4 +50,19 @@ export const protectedRoutes: RouteObject[] = [
       },
     ],
   },
+  {
+  path: "/inventory",
+  element: (
+    <ProtectedRoute>
+      <MainLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    {
+      index: true,
+      element: <InventoryPage />,
+    },
+  ],
+},
+
 ];

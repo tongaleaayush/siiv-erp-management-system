@@ -1,7 +1,10 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { generateCode } from "@/utils/codeGenerator/codeGenerator";
-import { PageLayout } from "@/components/common/page";
+import {
+  PageLayout,
+  PageToolbar,
+} from "@/components/common/page";
 import { Button } from "@/components/ui";
 import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
 import { getNextCode } from "@/utils/codeGenerator/getNextCode";
@@ -37,6 +40,23 @@ const CustomersPage = () => {
   const [customers, setCustomers] = useState<Customer[]>(
     customerService.getCustomers()
   );
+  const [search, setSearch] = useState("");
+const filteredCustomers = useMemo(() => {
+  const query = search.trim().toLowerCase();
+
+  return customers.filter((customer) => {
+    return (
+      query === "" ||
+      customer.customerCode.toLowerCase().includes(query) ||
+      customer.companyName.toLowerCase().includes(query) ||
+      customer.contactPerson.toLowerCase().includes(query) ||
+      customer.email.toLowerCase().includes(query) ||
+      customer.phone.toLowerCase().includes(query) ||
+      (customer.gstNumber ?? "").toLowerCase().includes(query)
+    );
+  });
+}, [customers, search]);
+
   const [nextCustomerCode, setNextCustomerCode] =
   useState(getNextCode(
   customers,
@@ -158,7 +178,6 @@ postalCode: customerData.postalCode,
   return (
     <PageLayout
       title="Customers"
-      description="Manage your customer database."
       breadcrumb={[
         { label: "Dashboard" },
         { label: "Customers" },
@@ -189,12 +208,13 @@ postalCode: customerData.postalCode,
   </div>
 }
     >
-      <CustomerTable
-        customers={customers}
-        onView={handleViewCustomer}
-        onEdit={handleEditCustomer}
-        onDelete={handleDeleteClick}
-      />
+     
+<CustomerTable
+  customers={filteredCustomers}
+  onView={handleViewCustomer}
+  onEdit={handleEditCustomer}
+  onDelete={handleDeleteClick}
+/>
 
       <AddCustomerDialog
   open={isAddCustomerDialogOpen}

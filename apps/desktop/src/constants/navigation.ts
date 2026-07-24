@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Users,
   Package,
+  Boxes,
   FileText,
   BarChart3,
   Settings,
@@ -23,6 +24,11 @@ export const navigation = [
     path: "/products",
     icon: Package,
   },
+  {
+  name: "Inventory",
+  path: "/inventory",
+  icon: Boxes,
+},
   {
     name: "Invoices",
     path: "/invoices",

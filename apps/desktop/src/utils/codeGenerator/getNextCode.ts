@@ -1,5 +1,5 @@
 export const getNextCode = <
-  T extends Record<string, unknown>
+  T extends object
 >(
   items: T[],
   prefix: string,

@@ -1,7 +1,7 @@
 import type { ExportColumn } from "@/services/export";
 
 export interface ExportButtonProps<
-  T extends Record<string, unknown>
+T extends object
 > {
   moduleName: string;
 

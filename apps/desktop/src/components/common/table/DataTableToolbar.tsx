@@ -22,9 +22,7 @@ const DataTableToolbar = ({
     <div className="mb-5 flex items-center justify-between gap-4">
       <div className="flex items-end gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">
-            Search
-          </label>
+          
 
           <div className="relative w-80">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -42,10 +40,7 @@ const DataTableToolbar = ({
         {statusFilter !== undefined &&
           onStatusFilterChange !== undefined && (
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
-                Status
-              </label>
-
+              
               <select
                 value={statusFilter}
                 onChange={(e) =>
