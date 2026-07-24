@@ -5,39 +5,53 @@ from flask_jwt_extended import (
     create_refresh_token,
 )
 
-from app.auth.models import Role, User
+from app.auth.models import Role
 from app.auth.repository import UserRepository
-from app.exceptions.custom_exceptions import (
-    ConflictException,
+
+from app.core.exceptions import (
+    DuplicateException,
     NotFoundException,
 )
 
 
 class UserService:
+
     @staticmethod
-    def create_user(full_name: str, email: str, password: str):
+    def create_user(
+        full_name: str,
+        email: str,
+        password: str,
+    ):
         """
         Create a new user with the default ADMIN role.
         """
 
-        existing_user = UserRepository.get_by_email(email)
+        existing_user = UserRepository.get_by_email(
+            email
+        )
 
         if existing_user:
-            raise ConflictException("Email already exists.")
+            raise DuplicateException(
+                "Email already exists."
+            )
+
 
         password_hash = bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt(),
         ).decode("utf-8")
 
-        # Get the default role
-        role = Role.query.filter_by(code="ADMIN").first()
 
-        print(role)
-        print(role.id if role else "Role not found")
+        role = Role.query.filter_by(
+            code="ADMIN"
+        ).first()
+
 
         if not role:
-            raise NotFoundException("Default role not found.")
+            raise NotFoundException(
+                "Default role not found."
+            )
+
 
         user = User(
             full_name=full_name,
@@ -46,12 +60,19 @@ class UserService:
             role=role,
         )
 
-        return UserRepository.create(user)
+
+        return UserRepository.create(
+            user
+        )
+
 
     @staticmethod
-    def verify_password(password: str, password_hash: str) -> bool:
+    def verify_password(
+        password: str,
+        password_hash: str,
+    ) -> bool:
         """
-        Verify whether the provided password matches the stored hash.
+        Verify password.
         """
 
         return bcrypt.checkpw(
@@ -59,30 +80,42 @@ class UserService:
             password_hash.encode("utf-8"),
         )
 
-    @staticmethod
-    def login_user(email: str, password: str):
-        """
-        Authenticate a user using email and password.
-        """
 
-        user = UserRepository.get_by_email(email)
+    @staticmethod
+    def login_user(
+        email: str,
+        password: str,
+    ):
+
+        user = UserRepository.get_by_email(
+            email
+        )
+
 
         if not user:
-            raise ConflictException("Invalid email or password.")
+            raise DuplicateException(
+                "Invalid email or password."
+            )
+
 
         if not UserService.verify_password(
             password,
             user.password_hash,
         ):
-            raise ConflictException("Invalid email or password.")
+            raise DuplicateException(
+                "Invalid email or password."
+            )
+
 
         access_token = create_access_token(
             identity=str(user.id)
         )
 
+
         refresh_token = create_refresh_token(
             identity=str(user.id)
         )
+
 
         return {
             "user": user,
@@ -90,15 +123,21 @@ class UserService:
             "refresh_token": refresh_token,
         }
 
-    @staticmethod
-    def get_current_user(user_id: int):
-        """
-        Retrieve the currently authenticated user.
-        """
 
-        user = UserRepository.get_by_id(user_id)
+    @staticmethod
+    def get_current_user(
+        user_id: int,
+    ):
+
+        user = UserRepository.get_by_id(
+            user_id
+        )
+
 
         if not user:
-            raise NotFoundException("User not found.")
+            raise NotFoundException(
+                "User not found."
+            )
+
 
         return user

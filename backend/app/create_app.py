@@ -7,7 +7,7 @@ from config import DevelopmentConfig
 from app.api import register_namespaces
 from app.commands import seed_command
 from app.core.extensions import api, cors, db, jwt, ma, migrate
-from app.exceptions.handlers import register_error_handlers
+from app.core.exceptions.handlers import register_exception_handlers
 
 
 def create_app():
@@ -20,11 +20,13 @@ def create_app():
     jwt.init_app(app)
     ma.init_app(app)
     cors.init_app(app)
+    register_exception_handlers(app)
+    
     api.init_app(app)
+    
 
     register_namespaces(api)
-    register_error_handlers(app)
-
+    register_exception_handlers(app)
     app.cli.add_command(seed_command)
 
     return app
