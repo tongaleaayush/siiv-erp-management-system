@@ -1,46 +1,46 @@
 import type { ExportColumn } from "@/services/export";
-import type { Customer } from "../types/customer";
+import type { Customer } from "../types/customer.types";
 
 export const customerExportColumns: ExportColumn<Customer>[] = [
   {
     header: "Customer Code",
-    key: "customerCode",
+    accessor: (customer) => customer.customerCode,
   },
   {
-  header: "Company Name",
-  key: "companyName",
-},
-{
-  header: "Contact Person",
-  key: "contactPerson",
-},
+    header: "Company Name",
+    accessor: (customer) => customer.companyName,
+  },
+  {
+    header: "Contact Person",
+    accessor: (customer) => customer.contactPerson,
+  },
   {
     header: "Email",
-    key: "email",
+    accessor: (customer) => customer.email,
   },
   {
     header: "Phone",
-    key: "phone",
+    accessor: (customer) => customer.phone,
   },
   {
     header: "GST Number",
-    key: "gstNumber",
+    accessor: (customer) => customer.gstNumber,
   },
   {
     header: "Country",
-    key: "country",
+    accessor: (customer) => customer.country,
   },
   {
     header: "State",
-    key: "state",
+    accessor: (customer) => customer.state,
   },
   {
     header: "City",
-    key: "city",
+    accessor: (customer) => customer.city,
   },
   {
     header: "Status",
-    key: "status",
-    formatter: (value) => (value ? "Active" : "Inactive"),
+    accessor: (customer) =>
+      customer.status ? "Active" : "Inactive",
   },
 ];
