@@ -11,11 +11,19 @@ import { ExportButton } from "@/components/common/export";
 
 import InventoryTable from "../components/InventoryTable";
 
+import SerialStockTable from "../components/SerialStockTable";
+
 import AddInventoryDialog from "../components/AddInventoryDialog";
 
 import { inventoryService } from "../services/inventory.service";
 
+import {
+  serialStockService,
+} from "../services/serialStock.service";
+
 import { stockService } from "../services/stock.service";
+
+import { fifoService } from "../services/fifo.service";
 
 import type {
   InventoryTransaction,
@@ -42,6 +50,15 @@ const InventoryPage = () => {
 
 
 
+  const [
+    serialStock,
+    setSerialStock,
+  ] = useState(
+    serialStockService.getSerialStock()
+  );
+
+
+
   const handleStockIn = (
     data: any
   ) => {
@@ -49,6 +66,7 @@ const InventoryPage = () => {
 
     const transaction =
       stockService.stockIn({
+
         productId:
           data.productId,
 
@@ -60,6 +78,7 @@ const InventoryPage = () => {
 
         quantity:
           data.quantity,
+
       });
 
 
@@ -73,9 +92,77 @@ const InventoryPage = () => {
 
 
 
+    setSerialStock(
+      serialStockService.getSerialStock()
+    );
+
+
+
     setIsAddOpen(false);
 
   };
+
+
+
+
+  const testStockOut = () => {
+
+  try {
+
+
+    const transaction =
+      fifoService.stockOut({
+
+        productId:
+          "1",
+
+        productCode:
+          "PROD-0001",
+
+        productName:
+          "Con-Evator PCB 24VAC, with Bluetooth Device & Android Application Part No - 611095",
+
+        quantity:
+          10,
+
+      });
+
+
+
+    setTransactions(
+      (previous) => [
+        transaction,
+        ...previous,
+      ]
+    );
+
+
+
+    setSerialStock(
+      serialStockService.getSerialStock()
+    );
+
+
+
+    console.log(
+      transaction
+    );
+
+
+  }
+  catch(error) {
+
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : "Insufficient stock"
+    );
+
+
+  }
+
+};
 
 
 
@@ -134,6 +221,22 @@ const InventoryPage = () => {
           </Button>
 
 
+
+          <Button
+
+            variant="outline"
+
+            onClick={
+              testStockOut
+            }
+
+          >
+
+            Test OUT
+
+          </Button>
+
+
         </div>
 
       }
@@ -146,6 +249,16 @@ const InventoryPage = () => {
 
         transactions={
           transactions
+        }
+
+      />
+
+
+
+      <SerialStockTable
+
+        data={
+          serialStock
         }
 
       />

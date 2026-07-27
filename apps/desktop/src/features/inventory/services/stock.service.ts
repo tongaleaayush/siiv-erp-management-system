@@ -1,19 +1,21 @@
 import type {
   InventoryBatch,
-  ProductSerial,
   InventoryTransaction,
 } from "../types/inventory.types";
-
-import { productService } from "@/features/products/services/product.service";
+import {
+  productService,
+} from "@/features/products/services/product.service";
 
 import { inventoryService } from "./inventory.service";
 
 import { generateBatchNumber } from "../utils/batchGenerator";
 
-import { generateSerialNumbers } from "../utils/serialGenerator";
-
+import {
+  stockSummaryService,
+} from "./stockSummary.service";
 
 interface StockInPayload {
+
   productId: string;
 
   productCode: string;
@@ -21,7 +23,9 @@ interface StockInPayload {
   productName: string;
 
   quantity: number;
+
 }
+
 
 
 class StockService {
@@ -37,14 +41,6 @@ class StockService {
 
 
 
-    const serialNumbers =
-      generateSerialNumbers(
-        payload.productId,
-        payload.quantity
-      );
-
-
-
     const today =
       new Date()
         .toISOString()
@@ -57,28 +53,44 @@ class StockService {
       id:
         crypto.randomUUID(),
 
+
       batchNumber,
+
 
       productId:
         payload.productId,
 
+
       productCode:
         payload.productCode,
+
 
       productName:
         payload.productName,
 
+
       receivedDate:
         today,
 
+
+      originalQuantity:
+        payload.quantity,
+
+        
+
+
       quantity:
         payload.quantity,
+       
+
 
       availableQuantity:
         payload.quantity,
 
+
       createdAt:
         today,
+
 
       updatedAt:
         today,
@@ -93,47 +105,6 @@ class StockService {
 
 
 
-    const createdSerials:
-      ProductSerial[] =
-      serialNumbers.map(
-        (serialNumber) => ({
-
-          id:
-            crypto.randomUUID(),
-
-          serialNumber,
-
-          productId:
-            payload.productId,
-
-          productCode:
-            payload.productCode,
-
-          productName:
-            payload.productName,
-
-          batchNumber,
-
-          status:
-            "AVAILABLE",
-
-          createdAt:
-            today,
-
-        })
-      );
-
-
-
-    createdSerials.forEach(
-      (serial) =>
-        inventoryService.addSerial(
-          serial
-        )
-    );
-
-
-
     const transaction:
       InventoryTransaction =
     {
@@ -141,50 +112,76 @@ class StockService {
       id:
         crypto.randomUUID(),
 
+
       transactionDate:
         today,
+
 
       productId:
         payload.productId,
 
+
       productCode:
         payload.productCode,
+
 
       productName:
         payload.productName,
 
+
       transactionType:
         "IN",
 
+
       quantity:
         payload.quantity,
+stockAfterTransaction:
+  0,
 
-      batchNumbers:
-        [
-          batchNumber
-        ],
+      batchNumber:
+        batchNumber,
 
-      serialNumbers,
+
+      serialNumbers:
+        [],
+
+
+      referenceType:
+        "STOCK_ENTRY",
+
 
       remarks:
         `Stock received.\nBatch: ${batchNumber}\nQuantity: ${payload.quantity}`,
 
+
       createdAt:
+        today,
+
+
+      updatedAt:
         today,
 
     };
 
 
 
-    inventoryService.addTransaction(
-      transaction
-    );
+   const updatedStock =
+  stockSummaryService.getProductStock(
+    payload.productId
+  );
 
-    productService.updateStock(
+    productService.setStock(
   payload.productId,
-  payload.quantity,
-  "IN"
+  updatedStock
 );
+
+transaction.stockAfterTransaction =
+  updatedStock;
+
+inventoryService.addTransaction(
+  transaction
+);
+
 
 
 
@@ -192,7 +189,9 @@ class StockService {
 
   }
 
+
 }
+
 
 
 export const stockService =

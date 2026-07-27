@@ -5,75 +5,92 @@ import type {
 } from "../types/inventory.types";
 
 
+
+
+
+
+
 export const inventoryColumns:
   ColumnDef<InventoryTransaction>[] = [
 
+
+
   {
     accessorKey: "transactionDate",
+
     header: "Date",
+
   },
+
 
 
   {
     accessorKey: "productCode",
+
     header: "Product Code",
+
   },
+
 
 
   {
     accessorKey: "productName",
+
     header: "Product",
+
   },
+
 
 
   {
     accessorKey: "transactionType",
+
     header: "Type",
+
   },
+
 
 
   {
     accessorKey: "quantity",
+
     header: "Quantity",
+
   },
 
 
-  {
-    id: "batchNumbers",
 
-    header: "Batches",
+ {
+  accessorKey:
+    "stockAfterTransaction",
+
+  header:
+    "Stock",
+
+},
+
+
+
+  {
+    id: "batchNumber",
+
+    header: "Batch",
+
 
     cell: ({
       row,
     }) => {
 
+
       return (
-        row.original.batchNumbers.join(
-          ", "
-        )
+        row.original.batchNumber
       );
+
 
     },
 
   },
 
-
-  {
-    id: "serialCount",
-
-    header: "Serial Count",
-
-    cell: ({
-      row,
-    }) => {
-
-      return (
-        row.original.serialNumbers.length
-      );
-
-    },
-
-  },
 
 
   {
@@ -81,6 +98,9 @@ export const inventoryColumns:
 
     header: "Remarks",
 
+    enableSorting: false,
+
   },
+
 
 ];

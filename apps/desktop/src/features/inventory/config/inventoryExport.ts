@@ -65,9 +65,7 @@ export const inventoryExportColumns:
     accessor: (
       transaction
     ) =>
-      transaction.batchNumbers.join(
-        ", "
-      ),
+      transaction.batchNumber,
   },
 
 

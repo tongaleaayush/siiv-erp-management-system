@@ -1,8 +1,16 @@
 import { inventoryService } from "./inventory.service";
 
+import {
+  productService,
+} from "@/features/products/services/product.service";
+
 import type {
   InventoryTransaction,
+  ProductSerial,
 } from "../types/inventory.types";
+
+import { generateSerialNumbers } from "../utils/serialGenerator";
+
 
 
 interface StockOutPayload {
@@ -19,6 +27,7 @@ interface StockOutPayload {
 
 
 
+
 class FIFOService {
 
 
@@ -31,11 +40,13 @@ class FIFOService {
       payload.quantity;
 
 
-    const usedBatches: string[] = [];
+
+    const usedBatchNumbers: string[] = [];
 
     const usedSerials: string[] = [];
 
     const remarks: string[] = [];
+
 
 
 
@@ -49,15 +60,41 @@ class FIFOService {
             batch.availableQuantity > 0
         )
         .sort(
-          (a, b) =>
-            new Date(
-              a.receivedDate
-            ).getTime()
-            -
-            new Date(
-              b.receivedDate
-            ).getTime()
+          (a, b) => {
+
+
+            const dateDifference =
+              new Date(
+                a.receivedDate
+              ).getTime()
+              -
+              new Date(
+                b.receivedDate
+              ).getTime();
+
+
+
+            if (
+              dateDifference !== 0
+            ) {
+
+              return dateDifference;
+
+            }
+
+
+
+            return (
+              Number(a.batchNumber)
+              -
+              Number(b.batchNumber)
+            );
+
+
+          }
         );
+
+
 
 
 
@@ -66,11 +103,16 @@ class FIFOService {
     ) {
 
 
+
       if (
         requiredQuantity <= 0
       ) {
+
         break;
+
       }
+
+
 
 
 
@@ -82,8 +124,11 @@ class FIFOService {
 
 
 
+
+
       batch.availableQuantity -=
         consume;
+
 
 
 
@@ -92,49 +137,107 @@ class FIFOService {
 
 
 
-      usedBatches.push(
+
+
+      usedBatchNumbers.push(
         batch.batchNumber
       );
 
 
 
-      const availableSerials =
-        inventoryService
-          .getSerials()
-          .filter(
-            (serial) =>
-              serial.productId ===
-                payload.productId &&
-              serial.batchNumber ===
-                batch.batchNumber &&
-              serial.status ===
-                "AVAILABLE"
-          )
-          .slice(
-            0,
-            consume
+
+
+      const generatedSerialNumbers =
+        generateSerialNumbers(
+          payload.productId,
+          consume
+        );
+
+
+
+
+
+      generatedSerialNumbers.forEach(
+        (serialNumber) => {
+
+
+
+          const serial: ProductSerial =
+          {
+
+            id:
+              crypto.randomUUID(),
+
+
+
+            serialNumber,
+
+
+
+            productId:
+              payload.productId,
+
+
+
+            productCode:
+              payload.productCode,
+
+
+
+            productName:
+              payload.productName,
+
+
+
+            batchNumber:
+              batch.batchNumber,
+
+
+
+            status:
+              "ISSUED",
+
+
+
+            issuedDate:
+              new Date()
+                .toISOString()
+                .split("T")[0],
+
+
+
+            createdAt:
+              new Date()
+                .toISOString()
+                .split("T")[0],
+
+
+
+            updatedAt:
+              new Date()
+                .toISOString()
+                .split("T")[0],
+
+          };
+
+
+
+
+          inventoryService.addSerial(
+            serial
           );
 
-
-
-      availableSerials.forEach(
-        (serial) => {
-
-          serial.status =
-            "ISSUED";
-
-          serial.issuedDate =
-            new Date()
-              .toISOString()
-              .split("T")[0];
 
 
           usedSerials.push(
-            serial.serialNumber
+            serialNumber
           );
+
 
         }
       );
+
+
 
 
 
@@ -142,7 +245,11 @@ class FIFOService {
         `Batch ${batch.batchNumber}: ${consume} units`
       );
 
+
+
     }
+
+
 
 
 
@@ -150,11 +257,58 @@ class FIFOService {
       requiredQuantity > 0
     ) {
 
+
       throw new Error(
         "Insufficient stock"
       );
 
+
     }
+
+
+
+
+
+    // Save updated batch quantities
+
+    inventoryService.updateBatches(
+      batches
+    );
+
+
+
+
+
+    const currentStock =
+      inventoryService
+        .getBatches()
+        .filter(
+          (batch) =>
+            batch.productId ===
+            payload.productId
+        )
+        .reduce(
+          (
+            total,
+            batch
+          ) =>
+            total +
+            batch.availableQuantity,
+          0
+        );
+
+
+
+
+
+    // Sync product page stock
+
+    productService.setStock(
+      payload.productId,
+      currentStock
+    );
+
+
 
 
 
@@ -165,44 +319,85 @@ class FIFOService {
 
 
 
+
+
     const transaction:
       InventoryTransaction =
     {
 
+
       id:
         crypto.randomUUID(),
+
+
 
       transactionDate:
         today,
 
+
+
       productId:
         payload.productId,
+
+
 
       productCode:
         payload.productCode,
 
+
+
       productName:
         payload.productName,
+
+
 
       transactionType:
         "OUT",
 
+
+
       quantity:
         payload.quantity,
 
-      batchNumbers:
-        usedBatches,
+
+
+      stockAfterTransaction:
+        currentStock,
+
+
+
+      batchNumber:
+        usedBatchNumbers[0],
+
+
 
       serialNumbers:
         usedSerials,
 
+
+
+      referenceType:
+        "STOCK_OUT",
+
+
+
       remarks:
         remarks.join("\n"),
+
+
 
       createdAt:
         today,
 
+
+
+      updatedAt:
+        today,
+
+
     };
+
+
 
 
 
@@ -211,11 +406,18 @@ class FIFOService {
     );
 
 
+
+
     return transaction;
+
 
   }
 
+
 }
+
+
+
 
 
 export const fifoService =

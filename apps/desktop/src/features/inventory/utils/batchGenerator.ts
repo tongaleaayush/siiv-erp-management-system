@@ -1,12 +1,15 @@
-let batchCounter: {
-  [year: string]: number;
-} = {};
+import { storage } from "@/utils/storage/storage";
+
+
+const BATCH_COUNTER_KEY =
+  "batch_counter";
 
 
 
 const getWeekNumber = (
   date: Date
 ): number => {
+
 
   const firstDayOfYear =
     new Date(
@@ -17,9 +20,11 @@ const getWeekNumber = (
 
 
   const pastDaysOfYear =
-    (date.getTime() -
-      firstDayOfYear.getTime()) /
-    86400000;
+    (
+      date.getTime() -
+      firstDayOfYear.getTime()
+    ) / 86400000;
+
 
 
   return Math.ceil(
@@ -34,48 +39,65 @@ const getWeekNumber = (
 
 
 
+
 export const generateBatchNumber =
   (): string => {
+
 
 
     const today =
       new Date();
 
 
-    const fullYear =
-      today.getFullYear();
-
 
     const year =
-      String(fullYear)
-        .slice(-2);
+      String(
+        today.getFullYear()
+      ).slice(-2);
 
 
 
     const week =
       String(
         getWeekNumber(today)
-      ).padStart(2, "0");
+      )
+      .padStart(2, "0");
 
 
 
-    if (
-      !batchCounter[year]
-    ) {
+    const counters =
+      storage.get<
+        Record<string, number>
+      >(
+        BATCH_COUNTER_KEY,
+        {}
+      );
 
-      batchCounter[year] = 1;
 
-    } else {
 
-      batchCounter[year]++;
+    if (!counters[year]) {
+
+      counters[year] = 1;
+
+    }
+    else {
+
+      counters[year]++;
 
     }
 
 
 
+    storage.set(
+      BATCH_COUNTER_KEY,
+      counters
+    );
+
+
+
     const serial =
       String(
-        batchCounter[year]
+        counters[year]
       )
       .padStart(4, "0");
 
@@ -84,5 +106,6 @@ export const generateBatchNumber =
     return (
       `${year}${week}${serial}`
     );
+
 
 };

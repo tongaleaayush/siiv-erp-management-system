@@ -1,86 +1,137 @@
+import { storage } from "@/utils/storage/storage";
+
+
 interface SerialCounter {
+
   [productId: string]: {
+
     [year: string]: number;
+
   };
+
 }
 
 
-const serialCounter: SerialCounter = {};
+
+const SERIAL_COUNTER_KEY =
+  "serial_counter";
 
 
 
-const getWeekNumber = (
+const getISOWeekNumber = (
   date: Date
 ): number => {
 
-  const firstDayOfYear =
+
+  const temp =
     new Date(
-      date.getFullYear(),
-      0,
-      1
+      Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      )
     );
 
 
-  const pastDays =
-    (
-      date.getTime() -
-      firstDayOfYear.getTime()
-    ) / 86400000;
+
+  const dayNumber =
+    temp.getUTCDay() || 7;
+
+
+
+  temp.setUTCDate(
+    temp.getUTCDate() +
+    4 -
+    dayNumber
+  );
+
+
+
+  const yearStart =
+    new Date(
+      Date.UTC(
+        temp.getUTCFullYear(),
+        0,
+        1
+      )
+    );
+
 
 
   return Math.ceil(
     (
-      pastDays +
-      firstDayOfYear.getDay() +
+      (
+        temp.getTime() -
+        yearStart.getTime()
+      )
+      /
+      86400000
+      +
       1
-    ) / 7
+    )
+    /
+    7
   );
 
 };
 
 
 
+
+
 export const generateSerialNumbers = (
+
   productId: string,
+
   quantity: number
+
 ): string[] => {
+
 
 
   const today =
     new Date();
 
 
-  const year =
-    today.getFullYear();
-
 
   const yearCode =
-    String(year);
+    String(
+      today.getFullYear()
+    );
 
 
 
   const weekCode =
     String(
-      getWeekNumber(today)
-    ).padStart(2, "0");
+      getISOWeekNumber(today)
+    )
+    .padStart(2, "0");
+
+
+
+  const counters =
+    storage.get<SerialCounter>(
+      SERIAL_COUNTER_KEY,
+      {}
+    );
 
 
 
   if (
-    !serialCounter[productId]
+    !counters[productId]
   ) {
 
-    serialCounter[productId] = {};
+    counters[productId] = {};
 
   }
 
 
 
   if (
-    !serialCounter[productId][yearCode]
+    !counters[productId][yearCode]
   ) {
 
-    serialCounter[productId][yearCode] = 1;
+    counters[productId][yearCode] = 1;
 
   }
 
@@ -97,8 +148,9 @@ export const generateSerialNumbers = (
   ) {
 
 
+
     const currentSerial =
-      serialCounter[productId][yearCode];
+      counters[productId][yearCode];
 
 
 
@@ -114,9 +166,16 @@ export const generateSerialNumbers = (
 
 
 
-    serialCounter[productId][yearCode]++;
+    counters[productId][yearCode]++;
 
   }
+
+
+
+  storage.set(
+    SERIAL_COUNTER_KEY,
+    counters
+  );
 
 
 
