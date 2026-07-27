@@ -1,14 +1,32 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+
 
 export interface DropdownItem {
+
   label: string;
-  onClick?: () => void;
-  disabled?: boolean;
+
+  value?: string;
+
   icon?: ReactNode;
-  danger?: boolean;
+
+  disabled?: boolean;
+
+  onClick?: () => void;
+
 }
 
+
+
 export interface DropdownProps {
-  trigger: (isOpen: boolean) => ReactNode;
+
+  trigger:
+    | ReactNode
+    | ((isOpen: boolean) => ReactNode);
+
+
   items: DropdownItem[];
+
+
+  align?: "left" | "right";
+
 }

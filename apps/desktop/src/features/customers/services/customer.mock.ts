@@ -365,4 +365,8 @@ export const customers: Customer[] = [
   },
 ];
 
-getNextCode(customers, "CUST");
+getNextCode(
+  customers,
+  "CUST",
+  "customerCode"
+);

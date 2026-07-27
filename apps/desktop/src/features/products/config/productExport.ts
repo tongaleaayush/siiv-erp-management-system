@@ -1,41 +1,98 @@
-import type { ExportColumn } from "@/components/common/export";
+import type { ExportColumn } from "@/services/export";
+
 import type { Product } from "../types/product.types";
 
-export const productExportColumns: ExportColumn<Product>[] = [
+
+export const productExportColumns:
+  ExportColumn<Product>[] = [
+
   {
     header: "Product Code",
-    accessor: (product) => product.productCode,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.productCode,
   },
+
+
   {
     header: "Product Name",
-    accessor: (product) => product.productName,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.productName,
   },
+
+
   {
     header: "Unit",
-    accessor: (product) => product.unit,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.unit,
   },
+
+
   {
     header: "HSN Code",
-    accessor: (product) => product.hsnCode,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.hsnCode,
   },
+
+
   {
     header: "SGST",
-    accessor: (product) => `${product.sgst}%`,
+
+    accessor: (
+      product: Product
+    ) =>
+      `${product.sgst}%`,
   },
+
+
   {
     header: "CGST",
-    accessor: (product) => `${product.cgst}%`,
+
+    accessor: (
+      product: Product
+    ) =>
+      `${product.cgst}%`,
   },
+
+
   {
     header: "IGST",
-    accessor: (product) => `${product.igst}%`,
+
+    accessor: (
+      product: Product
+    ) =>
+      `${product.igst}%`,
   },
+
+
   {
     header: "Rate",
-    accessor: (product) => product.rate,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.rate,
   },
+
+
   {
     header: "Stock",
-    accessor: (product) => product.stock,
+
+    accessor: (
+      product: Product
+    ) =>
+      product.stock,
   },
+
 ];
