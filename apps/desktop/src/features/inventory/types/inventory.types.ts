@@ -1,9 +1,15 @@
-export interface InventoryEntry {
+export type InventoryTransactionType =
+  | "IN"
+  | "OUT";
+
+
+
+export interface InventoryTransaction {
+
   id: string;
 
-  inventoryCode: string;
+  transactionDate: string;
 
-  date: string;
 
   productId: string;
 
@@ -11,19 +17,114 @@ export interface InventoryEntry {
 
   productName: string;
 
-  transactionType: "IN" | "OUT";
+
+  transactionType:
+    "IN" | "OUT";
+
 
   quantity: number;
 
-  remainingQuantity: number;
+  stockAfterTransaction: number;
 
-  unit: string;
 
-  stockBalance: number;
+  batchNumber: string;
+
+
+  serialNumbers: string[];
+
+
+  referenceType:
+    string;
+
 
   remarks: string;
+
 
   createdAt: string;
 
   updatedAt: string;
+
+}
+
+
+
+
+export interface InventoryBatch {
+
+  id: string;
+
+
+  batchNumber: string;
+
+
+  productId: string;
+
+
+  productCode: string;
+
+  productName: string;
+
+
+  quantity?: number;
+
+
+  originalQuantity?: number;
+
+
+  availableQuantity: number;
+
+
+  receivedDate: string;
+
+
+  createdAt: string;
+
+  updatedAt?: string;
+
+}
+
+
+
+
+
+export type SerialStatus =
+  | "AVAILABLE"
+  | "ISSUED";
+
+
+
+export interface ProductSerial {
+
+  id: string;
+
+
+  serialNumber: string;
+
+
+  productId: string;
+
+
+  productCode: string;
+
+
+  productName: string;
+
+
+  batchNumber: string;
+
+
+  status: SerialStatus;
+
+
+  issuedReferenceId?: string;
+
+
+  issuedDate?: string;
+
+
+  createdAt: string;
+
+
+  updatedAt?: string;
+
 }

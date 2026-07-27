@@ -3,95 +3,138 @@ import { useRef } from "react";
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 
-import InventoryForm, {
-  type InventoryFormRef,
-} from "./InventoryForm";
-
-import type { InventoryFormData } from "../types/inventoryForm";
+import StockInForm, {
+  type StockInFormRef,
+} from "./StockInForm";
 
 
 interface AddInventoryDialogProps {
-  open: boolean;
 
-  inventoryCode: string;
+  open: boolean;
 
   onClose: () => void;
 
   onSave: (
-    data: InventoryFormData
+    data: any
   ) => void;
+
 }
+
 
 
 const AddInventoryDialog = ({
   open,
-  inventoryCode,
   onClose,
   onSave,
 }: AddInventoryDialogProps) => {
 
 
-  const inventoryFormRef =
-    useRef<InventoryFormRef>(null);
+  const formRef =
+    useRef<StockInFormRef>(null);
+
 
 
   const handleSave = () => {
 
-    if (!inventoryFormRef.current)
+
+    if (!formRef.current)
       return;
 
 
+
     const valid =
-      inventoryFormRef.current.validate();
+      formRef.current.validate();
+
 
 
     if (!valid)
       return;
 
 
+
     const data =
-      inventoryFormRef.current.getFormData();
+      formRef.current.getFormData();
+
 
 
     onSave(data);
 
+
     onClose();
+
   };
 
 
+
   return (
+
     <Dialog
-      open={open}
-      title="Add Inventory Entry"
-      onClose={onClose}
+
+      open={
+        open
+      }
+
+      title="Add Stock"
+
+      onClose={
+        onClose
+      }
+
+
       footer={
+
         <div className="flex justify-end gap-3">
 
+
           <Button
+
             variant="outline"
-            onClick={onClose}
+
+            onClick={
+              onClose
+            }
+
           >
+
             Cancel
+
           </Button>
+
 
 
           <Button
-            onClick={handleSave}
+
+            onClick={
+              handleSave
+            }
+
           >
-            Save Entry
+
+            Add Stock
+
           </Button>
+
 
         </div>
+
       }
+
     >
 
-      <InventoryForm
-        ref={inventoryFormRef}
-        inventoryCode={inventoryCode}
+
+      <StockInForm
+
+        ref={
+          formRef
+        }
+
       />
 
+
     </Dialog>
+
   );
+
 };
 
 

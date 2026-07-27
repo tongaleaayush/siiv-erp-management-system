@@ -1,22 +1,40 @@
 import { DataTable } from "@/components/common/table";
 
 import { inventoryColumns } from "./inventoryColumns";
-import type { InventoryEntry } from "../types/inventory.types";
+
+import type { InventoryTransaction } from "../types/inventory.types";
+
 
 interface InventoryTableProps {
-  inventory: InventoryEntry[];
+
+  transactions: InventoryTransaction[];
+
 }
 
+
+
 const InventoryTable = ({
-  inventory,
+  transactions,
 }: InventoryTableProps) => {
+
+
   return (
+
     <DataTable
-      columns={inventoryColumns}
-      data={inventory}
-      
+
+      columns={
+        inventoryColumns
+      }
+
+      data={
+        transactions
+      }
+
     />
+
   );
+
 };
+
 
 export default InventoryTable;

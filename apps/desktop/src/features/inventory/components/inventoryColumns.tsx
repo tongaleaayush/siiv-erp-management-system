@@ -1,53 +1,106 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import type { InventoryEntry } from "../types/inventory.types";
+import type {
+  InventoryTransaction,
+} from "../types/inventory.types";
 
 
-export const inventoryColumns: ColumnDef<InventoryEntry>[] = [
+
+
+
+
+
+export const inventoryColumns:
+  ColumnDef<InventoryTransaction>[] = [
+
+
 
   {
-    accessorKey: "inventoryCode",
-    header: "Inventory Code",
-  },
+    accessorKey: "transactionDate",
 
-  {
-    accessorKey: "date",
     header: "Date",
+
   },
+
+
 
   {
     accessorKey: "productCode",
+
     header: "Product Code",
+
   },
+
+
 
   {
     accessorKey: "productName",
+
     header: "Product",
+
   },
+
+
 
   {
     accessorKey: "transactionType",
+
     header: "Type",
+
   },
+
+
 
   {
     accessorKey: "quantity",
+
     header: "Quantity",
+
   },
 
-  {
-    accessorKey: "remainingQuantity",
-    header: "Remaining",
-  },
+
+
+ {
+  accessorKey:
+    "stockAfterTransaction",
+
+  header:
+    "Stock",
+
+},
+
+
 
   {
-    accessorKey: "stockBalance",
-    header: "Stock Balance",
+    id: "batchNumber",
+
+    header: "Batch",
+
+
+    cell: ({
+      row,
+    }) => {
+
+
+      return (
+        row.original.batchNumber
+      );
+
+
+    },
+
   },
 
+
+
   {
-    accessorKey: "unit",
-    header: "Unit",
+    accessorKey: "remarks",
+
+    header: "Remarks",
+
+    enableSorting: false,
+
   },
+
 
 ];

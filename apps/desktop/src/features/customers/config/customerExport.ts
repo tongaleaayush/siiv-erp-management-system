@@ -1,46 +1,98 @@
 import type { ExportColumn } from "@/services/export";
+
 import type { Customer } from "../types/customer.types";
 
-export const customerExportColumns: ExportColumn<Customer>[] = [
+
+export const customerExportColumns:
+  ExportColumn<Customer>[] = [
+
   {
     header: "Customer Code",
-    accessor: (customer) => customer.customerCode,
+
+    accessor: (
+      customer
+    ) =>
+      customer.customerCode,
   },
+
+
   {
     header: "Company Name",
-    accessor: (customer) => customer.companyName,
+
+    accessor: (
+      customer
+    ) =>
+      customer.companyName,
   },
+
+
   {
     header: "Contact Person",
-    accessor: (customer) => customer.contactPerson,
+
+    accessor: (
+      customer
+    ) =>
+      customer.contactPerson,
   },
+
+
   {
     header: "Email",
-    accessor: (customer) => customer.email,
+
+    accessor: (
+      customer
+    ) =>
+      customer.email,
   },
+
+
   {
     header: "Phone",
-    accessor: (customer) => customer.phone,
+
+    accessor: (
+      customer
+    ) =>
+      customer.phone,
   },
+
+
   {
     header: "GST Number",
-    accessor: (customer) => customer.gstNumber,
+
+    accessor: (
+      customer
+    ) =>
+      customer.gstNumber ?? "",
   },
+
+
   {
     header: "Country",
-    accessor: (customer) => customer.country,
+
+    accessor: (
+      customer
+    ) =>
+      customer.country,
   },
+
+
   {
     header: "State",
-    accessor: (customer) => customer.state,
+
+    accessor: (
+      customer
+    ) =>
+      customer.state,
   },
+
+
   {
     header: "City",
-    accessor: (customer) => customer.city,
+
+    accessor: (
+      customer
+    ) =>
+      customer.city,
   },
-  {
-    header: "Status",
-    accessor: (customer) =>
-      customer.status ? "Active" : "Inactive",
-  },
+
 ];

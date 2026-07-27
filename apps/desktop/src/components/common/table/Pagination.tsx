@@ -7,54 +7,88 @@ interface PaginationProps<TData> {
 
 function Pagination<TData>({
   table,
-  totalRows,
 }: PaginationProps<TData>) {
   const {
     pageIndex,
-    pageSize,
   } = table.getState().pagination;
 
-  const pageCount = table.getPageCount();
+  const pageCount =
+    table.getPageCount();
 
-  const start = pageIndex * pageSize + 1;
-  const end = Math.min((pageIndex + 1) * pageSize, totalRows);
 
   const createPagination = () => {
     const pages: (number | "...")[] = [];
 
+
     if (pageCount <= 7) {
-      for (let i = 0; i < pageCount; i++) {
+
+      for (
+        let i = 0;
+        i < pageCount;
+        i++
+      ) {
         pages.push(i);
       }
+
       return pages;
     }
 
+
     pages.push(0);
+
 
     if (pageIndex > 3) {
       pages.push("...");
     }
 
-    const startPage = Math.max(1, pageIndex - 2);
-    const endPage = Math.min(pageCount - 2, pageIndex + 2);
 
-    for (let i = startPage; i <= endPage; i++) {
+    const startPage =
+      Math.max(
+        1,
+        pageIndex - 2
+      );
+
+
+    const endPage =
+      Math.min(
+        pageCount - 2,
+        pageIndex + 2
+      );
+
+
+    for (
+      let i = startPage;
+      i <= endPage;
+      i++
+    ) {
       pages.push(i);
     }
 
-    if (pageIndex < pageCount - 4) {
+
+    if (
+      pageIndex <
+      pageCount - 4
+    ) {
       pages.push("...");
     }
 
-    pages.push(pageCount - 1);
+
+    pages.push(
+      pageCount - 1
+    );
+
 
     return pages;
   };
 
-  const pages = createPagination();
+
+  const pages =
+    createPagination();
+
 
   return (
     <div className="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 px-6 py-3 lg:flex-row lg:items-center lg:justify-between">
+
       <button
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
@@ -63,38 +97,67 @@ function Pagination<TData>({
         Previous
       </button>
 
+
       <div className="flex items-center gap-6">
+
         <div className="flex items-center gap-2">
-          {pages.map((page, index) => {
-            if (page === "...") {
+
+          {pages.map(
+            (
+              page,
+              index
+            ) => {
+
+              if (
+                page === "..."
+              ) {
+
+                return (
+                  <span
+                    key={`ellipsis-${index}`}
+                    className="px-2 text-slate-400"
+                  >
+                    ...
+                  </span>
+                );
+
+              }
+
+
+              const isActive =
+                page === pageIndex;
+
+
               return (
-                <span
-                  key={`ellipsis-${index}`}
-                  className="px-2 text-slate-400"
+                <button
+
+                  key={page}
+
+                  onClick={() =>
+                    table.setPageIndex(
+                      page
+                    )
+                  }
+
+                  className={`flex h-10 w-10 items-center justify-center rounded-md border text-sm transition-colors ${
+                    isActive
+                      ? "border-blue-600 bg-blue-50 font-semibold text-blue-700"
+                      : "border-slate-300 hover:bg-slate-100"
+                  }`}
+
                 >
-                  ...
-                </span>
+                  {page + 1}
+
+                </button>
               );
+
             }
+          )}
 
-            const isActive = page === pageIndex;
-
-            return (
-              <button
-                key={page}
-                onClick={() => table.setPageIndex(page)}
-                className={`flex h-10 w-10 items-center justify-center rounded-md border text-sm transition-colors ${
-                  isActive
-                    ? "border-blue-600 bg-blue-50 font-semibold text-blue-700"
-                    : "border-slate-300 hover:bg-slate-100"
-                }`}
-              >
-                {page + 1}
-              </button>
-            );
-          })}
         </div>
+
       </div>
+
 
       <button
         onClick={() => table.nextPage()}
@@ -103,8 +166,11 @@ function Pagination<TData>({
       >
         Next
       </button>
+
+
     </div>
   );
 }
+
 
 export default Pagination;

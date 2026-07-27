@@ -1,94 +1,198 @@
-import type { InventoryEntry } from "../types/inventory.types";
+import type {
+  InventoryBatch,
+  ProductSerial,
+  InventoryTransaction,
+} from "../types/inventory.types";
+
+import { storage } from "@/utils/storage/storage";
 
 
-let inventoryData: InventoryEntry[] = [
-  {
-    id: "1",
-
-    inventoryCode: "INV-0001",
-
-    date: "2026-07-24",
-
-    productId: "1",
-
-    productCode: "PROD-0001",
-
-    productName: "Laptop",
-
-    transactionType: "IN",
-
-    quantity: 10,
-
-    remainingQuantity: 10,
-
-    unit: "Nos",
-
-    stockBalance: 10,
-
-    remarks: "Initial Stock",
-
-    createdAt: "2026-07-24",
-
-    updatedAt: "2026-07-24",
-  },
+const BATCH_KEY =
+  "inventory_batches";
 
 
-  {
-    id: "2",
+const SERIAL_KEY =
+  "inventory_serials";
 
-    inventoryCode: "INV-0002",
 
-    date: "2026-07-24",
-
-    productId: "2",
-
-    productCode: "PROD-0002",
-
-    productName: "Keyboard",
-
-    transactionType: "IN",
-
-    quantity: 20,
-
-    remainingQuantity: 20,
-
-    unit: "Nos",
-
-    stockBalance: 20,
-
-    remarks: "Purchase Entry",
-
-    createdAt: "2026-07-24",
-
-    updatedAt: "2026-07-24",
-  },
-];
+const TRANSACTION_KEY =
+  "inventory_transactions";
 
 
 
 export const inventoryService = {
 
 
-  getInventory():
-    InventoryEntry[] {
+  getBatches():
+    InventoryBatch[] {
 
-    return inventoryData;
+    return storage.get(
+      BATCH_KEY,
+      []
+    );
 
   },
 
 
-  addInventory(
-    entry: InventoryEntry
-  ): InventoryEntry {
+
+  updateBatches(
+    batches: InventoryBatch[]
+  ) {
+
+    storage.set(
+      BATCH_KEY,
+      batches
+    );
+
+  },
 
 
-    inventoryData = [
-      entry,
-      ...inventoryData,
-    ];
+
+  addBatch(
+    batch: InventoryBatch
+  ) {
+
+    const batches =
+      this.getBatches();
 
 
-    return entry;
+    const updated =
+      [
+        batch,
+        ...batches,
+      ];
+
+
+    storage.set(
+      BATCH_KEY,
+      updated
+    );
+
+
+    return batch;
+
+  },
+
+
+
+  getSerials():
+    ProductSerial[] {
+
+    return storage.get(
+      SERIAL_KEY,
+      []
+    );
+
+  },
+
+
+
+  updateSerials(
+    serials: ProductSerial[]
+  ) {
+
+    storage.set(
+      SERIAL_KEY,
+      serials
+    );
+
+  },
+
+
+
+  addSerial(
+    serial: ProductSerial
+  ) {
+
+    const serials =
+      this.getSerials();
+
+
+    const updated =
+      [
+        serial,
+        ...serials,
+      ];
+
+
+    storage.set(
+      SERIAL_KEY,
+      updated
+    );
+
+
+    return serial;
+
+  },
+
+
+
+  getTransactions():
+    InventoryTransaction[] {
+
+    return storage.get(
+      TRANSACTION_KEY,
+      []
+    );
+
+  },
+
+
+
+  addTransaction(
+    transaction: InventoryTransaction
+  ) {
+
+    const transactions =
+      this.getTransactions();
+
+
+    const updated =
+      [
+        transaction,
+        ...transactions,
+      ];
+
+
+    storage.set(
+      TRANSACTION_KEY,
+      updated
+    );
+
+
+    return transaction;
+
+  },
+
+
+
+  resetInventory() {
+
+
+    storage.remove(
+      "products"
+    );
+
+
+    storage.remove(
+      BATCH_KEY
+    );
+
+
+    storage.remove(
+      SERIAL_KEY
+    );
+
+
+    storage.remove(
+      TRANSACTION_KEY
+    );
+
+
+    storage.remove(
+      "batch_counter"
+    );
+
 
   },
 

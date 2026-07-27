@@ -1,38 +1,91 @@
 import type { ExportColumn } from "@/services/export";
 
-import type { InventoryEntry } from "../types/inventory.types";
+import type {
+  InventoryTransaction,
+} from "../types/inventory.types";
 
-export const inventoryExportColumns: ExportColumn<InventoryEntry>[] = [
-  {
-    header: "Inventory Code",
-    accessor: (entry: InventoryEntry) => entry.inventoryCode,
-  },
+
+export const inventoryExportColumns:
+  ExportColumn<InventoryTransaction>[] = [
+
+
   {
     header: "Date",
-    accessor: (entry: InventoryEntry) => entry.date,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.transactionDate,
   },
+
+
   {
     header: "Product Code",
-    accessor: (entry: InventoryEntry) => entry.productCode,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.productCode,
   },
+
+
   {
     header: "Product Name",
-    accessor: (entry: InventoryEntry) => entry.productName,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.productName,
   },
+
+
   {
     header: "Transaction Type",
-    accessor: (entry: InventoryEntry) => entry.transactionType,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.transactionType,
   },
+
+
   {
     header: "Quantity",
-    accessor: (entry: InventoryEntry) => entry.quantity,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.quantity,
   },
+
+
   {
-    header: "Unit",
-    accessor: (entry: InventoryEntry) => entry.unit,
+    header: "Batch Numbers",
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.batchNumber,
   },
+
+
+  {
+    header: "Serial Count",
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.serialNumbers.length,
+  },
+
+
   {
     header: "Remarks",
-    accessor: (entry: InventoryEntry) => entry.remarks,
+
+    accessor: (
+      transaction
+    ) =>
+      transaction.remarks,
   },
+
 ];
