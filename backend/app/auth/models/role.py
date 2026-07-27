@@ -4,13 +4,15 @@ from .role_permission import role_permissions
 
 
 class Role(BaseModel):
+
     __tablename__ = "roles"
 
+
     code = db.Column(
-        db.String(50),
-        unique=True,
-        nullable=False,
-    )
+    db.String(50),
+    unique=True,
+    nullable=False,
+)
 
     name = db.Column(
         db.String(100),
@@ -18,10 +20,12 @@ class Role(BaseModel):
         nullable=False,
     )
 
+
     description = db.Column(
         db.String(255),
         nullable=True,
     )
+
 
     is_system = db.Column(
         db.Boolean,
@@ -29,11 +33,13 @@ class Role(BaseModel):
         default=False,
     )
 
+
     users = db.relationship(
         "User",
         back_populates="role",
-        lazy=True,
+        lazy="selectin",
     )
+
 
     permissions = db.relationship(
         "Permission",
@@ -42,5 +48,7 @@ class Role(BaseModel):
         lazy="selectin",
     )
 
+
     def __repr__(self):
+
         return f"<Role {self.name}>"

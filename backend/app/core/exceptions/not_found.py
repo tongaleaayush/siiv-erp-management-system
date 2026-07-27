@@ -1,12 +1,13 @@
-from app.core.exceptions.base import AppException
+from .base import AppException
 
 
 class NotFoundException(AppException):
 
     def __init__(
         self,
-        message: str,
+        message="Resource not found.",
     ):
+
         super().__init__(
             message=message,
             status_code=404,

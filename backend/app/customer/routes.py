@@ -1,10 +1,22 @@
 from flask import request
+
 from flask_restx import Namespace, Resource
+
 from marshmallow import ValidationError
 
+from flask_jwt_extended import jwt_required
+
+
+from app.auth.decorators import permission_required
+
+
 from app.customer.models import Customer
+
 from app.customer.constants import CUSTOMER_FILTER_FIELDS
+
+
 from app.core.validation.query import QueryValidator
+
 
 from app.customer.schemas import (
     CustomerCreateSchema,
@@ -12,8 +24,15 @@ from app.customer.schemas import (
     CustomerUpdateSchema,
 )
 
+
 from app.customer.service import CustomerService
-from app.utils.response import success_response, error_response
+
+
+from app.utils.response import (
+    success_response,
+    error_response,
+)
+
 
 
 customer_ns = Namespace(
@@ -22,44 +41,71 @@ customer_ns = Namespace(
 )
 
 
+
 create_schema = CustomerCreateSchema()
+
 update_schema = CustomerUpdateSchema()
 
+
 response_schema = CustomerResponseSchema()
-response_schema_many = CustomerResponseSchema(many=True)
+
+response_schema_many = CustomerResponseSchema(
+    many=True
+)
 
 
+
+
+
+# =====================================================
+# Customer List
+# =====================================================
 
 @customer_ns.route("")
 class CustomerListResource(Resource):
 
+
+    # =================================================
+    # GET ALL CUSTOMERS
+    # Permission: customer.view
+    # =================================================
+
+    @jwt_required()
+    @permission_required("customer.view")
     def get(self):
 
-        search = request.args.get("search")
 
-        sort_by = request.args.get("sort_by")
+        search = request.args.get(
+            "search"
+        )
+
+
+        sort_by = request.args.get(
+            "sort_by"
+        )
+
 
         sort_order = request.args.get(
             "sort_order",
-            "asc",
+            "asc"
         )
 
 
         page = request.args.get(
             "page",
-            default=1,
-            type=int,
+            1,
+            type=int
         )
 
 
         per_page = request.args.get(
             "per_page",
-            default=10,
-            type=int,
+            10,
+            type=int
         )
 
 
-        # Query validation
+
         try:
 
             QueryValidator.validate(
@@ -68,6 +114,7 @@ class CustomerListResource(Resource):
                 sort_by=sort_by,
                 sort_order=sort_order,
             )
+
 
         except ValueError as error:
 
@@ -78,9 +125,8 @@ class CustomerListResource(Resource):
 
 
 
-        # Dynamic filters
-
         filters = {}
+
 
 
         ignored_fields = {
@@ -92,17 +138,20 @@ class CustomerListResource(Resource):
         }
 
 
+
         for key, value in request.args.items():
+
 
             if key in ignored_fields:
                 continue
+
 
 
             if "__" in key:
 
                 field_name, operator = key.split(
                     "__",
-                    1,
+                    1
                 )
 
             else:
@@ -117,15 +166,19 @@ class CustomerListResource(Resource):
 
                 if field_name == "is_active":
 
-                    value = value.lower() == "true"
+                    value = (
+                        value.lower()
+                        == "true"
+                    )
 
 
 
                 column = getattr(
                     Customer,
                     field_name,
-                    None,
+                    None
                 )
+
 
 
                 if column:
@@ -133,46 +186,44 @@ class CustomerListResource(Resource):
                     filters[
                         (
                             column,
-                            operator,
+                            operator
                         )
                     ] = value
 
 
 
-        customers, total_records = CustomerService.list_customers(
-            search=search,
-            filters=filters,
-            page=page,
-            per_page=per_page,
-            sort_by=sort_by,
-            sort_order=sort_order,
+
+        customers, total_records = (
+            CustomerService.list_customers(
+
+                search=search,
+
+                filters=filters,
+
+                page=page,
+
+                per_page=per_page,
+
+                sort_by=sort_by,
+
+                sort_order=sort_order,
+
+            )
         )
 
 
 
         total_pages = (
-            (total_records + per_page - 1) // per_page
+
+            (total_records + per_page - 1)
+            //
+            per_page
+
             if per_page > 0
+
             else 0
+
         )
-
-
-
-        meta = {
-
-            "page": page,
-
-            "per_page": per_page,
-
-            "total_records": total_records,
-
-            "total_pages": total_pages,
-
-            "has_next": page < total_pages,
-
-            "has_previous": page > 1,
-
-        }
 
 
 
@@ -180,9 +231,28 @@ class CustomerListResource(Resource):
 
             message="Customers fetched successfully.",
 
-            data=response_schema_many.dump(customers),
 
-            meta=meta,
+            data=response_schema_many.dump(
+                customers
+            ),
+
+
+            meta={
+
+                "page": page,
+
+                "per_page": per_page,
+
+                "total_records": total_records,
+
+                "total_pages": total_pages,
+
+                "has_next": page < total_pages,
+
+                "has_previous": page > 1,
+
+            },
+
 
             status_code=200,
 
@@ -190,34 +260,58 @@ class CustomerListResource(Resource):
 
 
 
+
+
+
+    # =================================================
+    # CREATE CUSTOMER
+    # Permission: customer.create
+    # =================================================
+
+    @jwt_required()
+    @permission_required("customer.create")
     def post(self):
 
+
         try:
+
 
             data = create_schema.load(
                 request.get_json()
             )
 
 
-            customer = Customer(**data)
 
-
-            customer = CustomerService.create_customer(
-                customer
+            customer = Customer(
+                **data
             )
+
+
+
+            customer = (
+                CustomerService.create_customer(
+                    customer
+                )
+            )
+
 
 
             return success_response(
 
                 message="Customer created successfully.",
 
-                data=response_schema.dump(customer),
+
+                data=response_schema.dump(
+                    customer
+                ),
+
 
                 status_code=201,
 
             )
 
 
+
         except ValidationError as error:
 
 
@@ -232,81 +326,108 @@ class CustomerListResource(Resource):
             )
 
 
-        except ValueError as error:
-
-
-            return error_response(
-
-                message=str(error),
-
-                status_code=400,
-
-            )
 
 
 
 
-@customer_ns.route("/<int:customer_id>")
+
+
+# =====================================================
+# Single Customer
+# =====================================================
+
+@customer_ns.route(
+    "/<int:customer_id>"
+)
+
 class CustomerResource(Resource):
 
 
-    def get(self, customer_id: int):
+    # =================================================
+    # GET CUSTOMER BY ID
+    # Permission: customer.view
+    # =================================================
 
-        try:
+    @jwt_required()
+    @permission_required("customer.view")
+    def get(
+        self,
+        customer_id
+    ):
 
-            customer = CustomerService.get_customer_by_id(
+
+        customer = (
+            CustomerService.get_customer_by_id(
                 customer_id
             )
-
-
-            return success_response(
-
-                message="Customer fetched successfully.",
-
-                data=response_schema.dump(customer),
-
-                status_code=200,
-
-            )
-
-
-        except ValueError as error:
-
-
-            return error_response(
-
-                message=str(error),
-
-                status_code=404,
-
-            )
+        )
 
 
 
-    def put(self, customer_id: int):
+        return success_response(
+
+            message="Customer fetched successfully.",
+
+
+            data=response_schema.dump(
+                customer
+            ),
+
+
+            status_code=200,
+
+        )
+
+
+
+
+
+
+    # =================================================
+    # UPDATE CUSTOMER
+    # Permission: customer.update
+    # =================================================
+
+    @jwt_required()
+    @permission_required("customer.update")
+    def put(
+        self,
+        customer_id
+    ):
+
 
         try:
+
 
             data = update_schema.load(
                 request.get_json()
             )
 
 
-            customer = CustomerService.update_customer(
-                customer_id,
-                data,
+
+            customer = (
+                CustomerService.update_customer(
+                    customer_id,
+                    data
+                )
             )
+
 
 
             return success_response(
 
                 message="Customer updated successfully.",
 
-                data=response_schema.dump(customer),
+
+                data=response_schema.dump(
+                    customer
+                ),
+
 
                 status_code=200,
 
             )
+
 
 
         except ValidationError as error:
@@ -323,58 +444,34 @@ class CustomerResource(Resource):
             )
 
 
-        except ValueError as error:
-
-
-            message = str(error)
-
-
-            if message == "Customer not found.":
-
-                return error_response(
-
-                    message=message,
-
-                    status_code=404,
-
-                )
-
-
-            return error_response(
-
-                message=message,
-
-                status_code=400,
-
-            )
 
 
 
-    def delete(self, customer_id: int):
-
-        try:
-
-            CustomerService.delete_customer(
-                customer_id
-            )
 
 
-            return success_response(
+    # =================================================
+    # DELETE CUSTOMER
+    # Permission: customer.delete
+    # =================================================
 
-                message="Customer deleted successfully.",
-
-                status_code=200,
-
-            )
-
-
-        except ValueError as error:
+    @jwt_required()
+    @permission_required("customer.delete")
+    def delete(
+        self,
+        customer_id
+    ):
 
 
-            return error_response(
+        CustomerService.delete_customer(
+            customer_id
+        )
 
-                message=str(error),
 
-                status_code=404,
 
-            )
+        return success_response(
+
+            message="Customer deleted successfully.",
+
+            status_code=200,
+
+        )
