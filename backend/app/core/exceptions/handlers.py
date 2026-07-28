@@ -1,115 +1,116 @@
-from flask import jsonify
-
-from flask_jwt_extended.exceptions import (
-    NoAuthorizationError,
-    InvalidHeaderError,
-    JWTExtendedException,
+from app.core.exceptions import (
+    AppException,
+    AuthenticationException,
+    PermissionException,
+    NotFoundException,
+    DuplicateException,
+    ValidationException,
 )
 
-from app.core.exceptions.base import AppException
 
 
+def register_exception_handlers(app, api=None):
 
-def register_exception_handlers(app, api):
 
-
-    # =====================================================
-    # Application Custom Exceptions
-    # =====================================================
-
-    @api.errorhandler(AppException)
-    def handle_api_exception(error):
+    def response(message, status_code):
 
         return {
             "success": False,
-            "message": error.message,
+            "message": message,
             "data": None,
-            "errors": [],
-        }, error.status_code
+            "errors": []
+        }, status_code
+
+
+
+    def handle_permission_exception(error):
+
+        print("========== PERMISSION HANDLER ==========")
+        print(type(error))
+        print(error.message)
+
+        return response(
+            error.message,
+            403
+        )
+
+
+
+    if api:
+
+        api.errorhandler(PermissionException)(
+            handle_permission_exception
+        )
+
+
+
+    app.register_error_handler(
+        PermissionException,
+        handle_permission_exception
+    )
+
+
+
+    @app.errorhandler(AuthenticationException)
+    def handle_authentication_exception(error):
+
+        return response(
+            error.message,
+            401
+        )
+
+
+
+    @app.errorhandler(NotFoundException)
+    def handle_not_found_exception(error):
+
+        return response(
+            error.message,
+            404
+        )
+
+
+
+    @app.errorhandler(DuplicateException)
+    def handle_duplicate_exception(error):
+
+        return response(
+            error.message,
+            409
+        )
+
+
+
+    @app.errorhandler(ValidationException)
+    def handle_validation_exception(error):
+
+        return response(
+            error.message,
+            400
+        )
 
 
 
     @app.errorhandler(AppException)
     def handle_app_exception(error):
 
-        return jsonify(
-            {
-                "success": False,
-                "message": error.message,
-                "data": None,
-                "errors": [],
-            }
-        ), error.status_code
+        return response(
+            error.message,
+            error.status_code
+        )
 
 
 
-    # =====================================================
-# JWT Exceptions
-# =====================================================
-    @api.errorhandler(NoAuthorizationError)
-    def handle_missing_token(error):
+    @app.errorhandler(Exception)
+    def handle_general_exception(error):
 
-       return {
-        "success": False,
-        "message": "Authorization token is missing.",
-        "data": None,
-        "errors": [],
-    }, 401
+        print(
+            "UNHANDLED ERROR:",
+            type(error),
+            error
+        )
 
-
-
-    @api.errorhandler(InvalidHeaderError)
-    def handle_invalid_header(error):
-
-      return {
-        "success": False,
-        "message": "Invalid authorization header.",
-        "data": None,
-        "errors": [],
-    }, 401
-
-
-
-    @api.errorhandler(JWTExtendedException)
-    def handle_jwt_exception(error):
-
-       return {
-        "success": False,
-        "message": str(error),
-        "data": None,
-        "errors": [],
-    }, 401
-
-    # =====================================================
-    # 404
-    # =====================================================
-
-    @app.errorhandler(404)
-    def handle_not_found(error):
-
-        return jsonify(
-            {
-                "success": False,
-                "message": "Resource not found.",
-                "data": None,
-                "errors": [],
-            }
-        ), 404
-
-
-
-    # =====================================================
-    # Unknown Exception
-    # =====================================================
-
-    @api.errorhandler(Exception)
-    def handle_unknown_exception(error):
-
-        app.logger.exception(error)
-
-        return {
-            "success": False,
-            "message": "Internal server error.",
-            "data": None,
-            "errors": [],
-        }, 500
+        return response(
+            "Internal Server Error",
+            500
+        )

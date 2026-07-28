@@ -1,6 +1,6 @@
 from app.core.database.base_model import BaseModel
 from app.core.extensions import db
-from datetime import datetime
+
 
 class Customer(BaseModel):
     __tablename__ = "customers"
@@ -89,13 +89,21 @@ class Customer(BaseModel):
         index=True,
     )
 
-    is_active = db.Column(
+    # Soft Delete Fields
+    is_deleted = db.Column(
         db.Boolean,
         nullable=False,
-        default=True,
+        default=False,
+        index=True,
+    )
+
+    deleted_by = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=True,
     )
 
     deleted_at = db.Column(
-       db.DateTime(timezone=True),
-       nullable=True,
-)
+        db.DateTime(timezone=True),
+        nullable=True,
+    )

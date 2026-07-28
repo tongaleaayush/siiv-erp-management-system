@@ -1,3 +1,5 @@
+from flask_jwt_extended import get_jwt_identity
+
 from app.customer.models import Customer
 from app.customer.repository.customer_repository import CustomerRepository
 
@@ -9,11 +11,7 @@ from app.core.exceptions import (
 
 class CustomerService:
 
-
     repository = CustomerRepository()
-
-
-
 
 
     @classmethod
@@ -22,74 +20,40 @@ class CustomerService:
         customer: Customer,
     ) -> Customer:
 
-
         existing_customer = (
-
             cls.repository.get_by_email(
-
                 customer.email
-
             )
-
         )
 
-
         if existing_customer:
-
             raise DuplicateException(
-
                 "Email already exists."
-
             )
-
-
-
 
 
         if customer.gst_number:
 
-
             existing_customer = (
-
                 cls.repository.get_by_gst_number(
-
                     customer.gst_number
-
                 )
-
             )
 
-
             if existing_customer:
-
                 raise DuplicateException(
-
                     "GST number already exists."
-
                 )
-
-
-
 
 
         customer.customer_code = (
-
             cls.repository.get_next_customer_code()
-
         )
-
 
 
         return cls.repository.create(
-
             customer
-
         )
-
-
-
-
-
 
 
     @classmethod
@@ -103,7 +67,6 @@ class CustomerService:
         sort_by=None,
         sort_order="asc",
     ):
-
 
         return cls.repository.list_customers(
 
@@ -122,44 +85,26 @@ class CustomerService:
         )
 
 
-
-
-
-
-
     @classmethod
     def get_customer_by_id(
         cls,
         customer_id: int,
     ) -> Customer:
 
-
         customer = (
-
             cls.repository.get_by_id(
-
                 customer_id
-
             )
-
         )
-
 
         if customer is None:
 
-
             raise NotFoundException(
-
                 "Customer not found."
-
             )
 
 
         return customer
-
-
-
-
 
 
 
@@ -172,129 +117,67 @@ class CustomerService:
 
 
         customer = (
-
             cls.get_customer_by_id(
-
                 customer_id
-
             )
-
         )
 
 
-
-
-
-        # Email duplicate check
-
         if "email" in data:
 
-
             existing_customer = (
-
                 cls.repository.get_by_email(
-
                     data["email"]
-
                 )
-
             )
 
-
             if (
-
                 existing_customer
-
                 and existing_customer.id != customer.id
-
             ):
 
-
                 raise DuplicateException(
-
                     "Email already exists."
-
                 )
 
 
-
-
-
-
-
-        # GST duplicate check
 
         if (
-
             "gst_number" in data
-
             and data["gst_number"]
-
         ):
 
-
             existing_customer = (
-
                 cls.repository.get_by_gst_number(
-
                     data["gst_number"]
-
                 )
-
             )
 
 
             if (
-
                 existing_customer
-
                 and existing_customer.id != customer.id
-
             ):
 
-
                 raise DuplicateException(
-
                     "GST number already exists."
-
                 )
 
 
-
-
-
-
-
-        # Update only provided fields
 
         for key, value in data.items():
 
-
             setattr(
-
                 customer,
-
                 key,
-
                 value,
-
             )
-
-
 
 
 
         return cls.repository.update(
-
             customer
-
         )
-
-
-
-
-
-
 
 
 
@@ -306,17 +189,50 @@ class CustomerService:
 
 
         customer = (
-
             cls.get_customer_by_id(
-
                 customer_id
-
             )
+        )
 
+
+        # Logged-in user ID from JWT
+        deleted_by = int(
+            get_jwt_identity()
         )
 
 
         cls.repository.delete(
+
+            customer,
+
+            deleted_by,
+
+        )
+
+    @classmethod
+    def restore_customer(
+        cls,
+        customer_id: int,
+    ) -> Customer:
+
+
+        customer = cls.repository.get_deleted_by_id(
+
+            customer_id
+
+        )
+
+
+        if customer is None:
+
+            raise NotFoundException(
+
+                "Deleted customer not found."
+
+            )
+
+
+        return cls.repository.restore(
 
             customer
 
