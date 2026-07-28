@@ -2,9 +2,14 @@ from marshmallow import Schema, fields
 
 
 class UserCreateSchema(Schema):
-    full_name = fields.String(required=True)
 
-    email = fields.Email(required=True)
+    full_name = fields.String(
+        required=True
+    )
+
+    email = fields.Email(
+        required=True
+    )
 
     password = fields.String(
         required=True,
@@ -13,7 +18,10 @@ class UserCreateSchema(Schema):
 
 
 class UserLoginSchema(Schema):
-    email = fields.Email(required=True)
+
+    email = fields.Email(
+        required=True
+    )
 
     password = fields.String(
         required=True,
@@ -22,6 +30,7 @@ class UserLoginSchema(Schema):
 
 
 class UserResponseSchema(Schema):
+
     id = fields.Integer()
 
     full_name = fields.String()

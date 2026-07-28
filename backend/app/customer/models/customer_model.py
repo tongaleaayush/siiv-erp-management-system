@@ -1,5 +1,6 @@
 from app.core.database.base_model import BaseModel
 from app.core.extensions import db
+from datetime import datetime
 
 class Customer(BaseModel):
     __tablename__ = "customers"
@@ -93,3 +94,8 @@ class Customer(BaseModel):
         nullable=False,
         default=True,
     )
+
+    deleted_at = db.Column(
+       db.DateTime(timezone=True),
+       nullable=True,
+)

@@ -5,16 +5,22 @@ from flask_jwt_extended import (
     create_refresh_token,
 )
 
-from app.auth.models import Role
+from app.auth.models import (
+    User,
+    Role,
+)
+
 from app.auth.repository import UserRepository
 
 from app.core.exceptions import (
     DuplicateException,
     NotFoundException,
+    AuthenticationException,
 )
 
 
 class UserService:
+
 
     @staticmethod
     def create_user(
@@ -22,13 +28,14 @@ class UserService:
         email: str,
         password: str,
     ):
-        """
-        Create a new user with the default ADMIN role.
-        """
 
-        existing_user = UserRepository.get_by_email(
-            email
+
+        existing_user = (
+            UserRepository.get_by_email(
+                email
+            )
         )
+
 
         if existing_user:
             raise DuplicateException(
@@ -42,15 +49,18 @@ class UserService:
         ).decode("utf-8")
 
 
+
         role = Role.query.filter_by(
             code="ADMIN"
         ).first()
+
 
 
         if not role:
             raise NotFoundException(
                 "Default role not found."
             )
+
 
 
         user = User(
@@ -61,9 +71,11 @@ class UserService:
         )
 
 
+
         return UserRepository.create(
             user
         )
+
 
 
     @staticmethod
@@ -71,14 +83,16 @@ class UserService:
         password: str,
         password_hash: str,
     ) -> bool:
-        """
-        Verify password.
-        """
+
 
         return bcrypt.checkpw(
+
             password.encode("utf-8"),
+
             password_hash.encode("utf-8"),
+
         )
+
 
 
     @staticmethod
@@ -87,41 +101,82 @@ class UserService:
         password: str,
     ):
 
-        user = UserRepository.get_by_email(
-            email
+
+        user = (
+            UserRepository.get_by_email(
+                email
+            )
         )
 
 
+
         if not user:
-            raise DuplicateException(
+
+            raise AuthenticationException(
                 "Invalid email or password."
             )
+
+
+
+        if not user.is_active:
+
+            raise AuthenticationException(
+                "User account is inactive."
+            )
+
 
 
         if not UserService.verify_password(
             password,
             user.password_hash,
         ):
-            raise DuplicateException(
+
+            raise AuthenticationException(
                 "Invalid email or password."
             )
 
 
+
+        claims = {
+
+            "role": user.role.code
+
+            if user.role
+
+            else None
+
+        }
+
+
+
         access_token = create_access_token(
-            identity=str(user.id)
+
+            identity=str(user.id),
+
+            additional_claims=claims,
+
         )
+
 
 
         refresh_token = create_refresh_token(
-            identity=str(user.id)
+
+            identity=str(user.id),
+
         )
 
 
+
         return {
+
             "user": user,
+
             "access_token": access_token,
+
             "refresh_token": refresh_token,
+
         }
+
 
 
     @staticmethod
@@ -129,15 +184,21 @@ class UserService:
         user_id: int,
     ):
 
-        user = UserRepository.get_by_id(
-            user_id
+
+        user = (
+            UserRepository.get_by_id(
+                user_id
+            )
         )
 
 
+
         if not user:
+
             raise NotFoundException(
                 "User not found."
             )
+
 
 
         return user
