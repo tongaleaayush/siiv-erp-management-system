@@ -8,20 +8,19 @@ from app.core.exceptions import (
 )
 
 
-
 def register_exception_handlers(app, api=None):
 
-
     def response(message, status_code):
-
         return {
             "success": False,
             "message": message,
             "data": None,
-            "errors": []
+            "errors": [],
         }, status_code
 
-
+    # =====================================================
+    # Permission Exception
+    # =====================================================
 
     def handle_permission_exception(error):
 
@@ -31,86 +30,91 @@ def register_exception_handlers(app, api=None):
 
         return response(
             error.message,
-            403
+            403,
         )
 
-
-
     if api:
-
         api.errorhandler(PermissionException)(
             handle_permission_exception
         )
 
-
-
     app.register_error_handler(
         PermissionException,
-        handle_permission_exception
+        handle_permission_exception,
     )
 
-
+    # =====================================================
+    # Authentication Exception
+    # =====================================================
 
     @app.errorhandler(AuthenticationException)
     def handle_authentication_exception(error):
 
         return response(
             error.message,
-            401
+            401,
         )
 
-
+    # =====================================================
+    # Not Found Exception
+    # =====================================================
 
     @app.errorhandler(NotFoundException)
     def handle_not_found_exception(error):
 
         return response(
             error.message,
-            404
+            404,
         )
 
-
+    # =====================================================
+    # Duplicate Exception
+    # =====================================================
 
     @app.errorhandler(DuplicateException)
     def handle_duplicate_exception(error):
 
         return response(
             error.message,
-            409
+            409,
         )
 
-
+    # =====================================================
+    # Validation Exception
+    # =====================================================
 
     @app.errorhandler(ValidationException)
     def handle_validation_exception(error):
 
         return response(
             error.message,
-            400
+            400,
         )
 
-
+    # =====================================================
+    # Base Application Exception
+    # =====================================================
 
     @app.errorhandler(AppException)
     def handle_app_exception(error):
 
         return response(
             error.message,
-            error.status_code
+            error.status_code,
         )
 
-
+    # =====================================================
+    # General Exception
+    # =====================================================
 
     @app.errorhandler(Exception)
     def handle_general_exception(error):
 
-        print(
-            "UNHANDLED ERROR:",
-            type(error),
-            error
-        )
+        print("========== GENERAL EXCEPTION ==========")
+        print(type(error))
+        print(error)
 
         return response(
             "Internal Server Error",
-            500
+            500,
         )
