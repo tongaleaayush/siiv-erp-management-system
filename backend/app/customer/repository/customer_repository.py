@@ -7,7 +7,6 @@ from app.core.query.query_builder import QueryBuilder
 from app.customer.models import Customer
 
 
-
 class CustomerRepository:
 
 
@@ -15,7 +14,6 @@ class CustomerRepository:
     def create(
         customer: Customer
     ) -> Customer:
-
 
         db.session.add(customer)
 
@@ -27,13 +25,10 @@ class CustomerRepository:
 
 
 
-
-
     @staticmethod
     def get_by_id(
         customer_id: int
     ) -> Customer | None:
-
 
         return db.session.scalar(
 
@@ -41,13 +36,11 @@ class CustomerRepository:
 
                 Customer.id == customer_id,
 
-                Customer.is_active.is_(True),
+                Customer.is_deleted.is_(False),
 
             )
 
         )
-
-
 
 
 
@@ -56,20 +49,17 @@ class CustomerRepository:
         customer_code: str
     ) -> Customer | None:
 
-
         return db.session.scalar(
 
             db.select(Customer).where(
 
                 Customer.customer_code == customer_code,
 
-                Customer.is_active.is_(True),
+                Customer.is_deleted.is_(False),
 
             )
 
         )
-
-
 
 
 
@@ -78,20 +68,17 @@ class CustomerRepository:
         email: str
     ) -> Customer | None:
 
-
         return db.session.scalar(
 
             db.select(Customer).where(
 
                 Customer.email == email,
 
-                Customer.is_active.is_(True),
+                Customer.is_deleted.is_(False),
 
             )
 
         )
-
-
 
 
 
@@ -100,20 +87,17 @@ class CustomerRepository:
         gst_number: str
     ) -> Customer | None:
 
-
         return db.session.scalar(
 
             db.select(Customer).where(
 
                 Customer.gst_number == gst_number,
 
-                Customer.is_active.is_(True),
+                Customer.is_deleted.is_(False),
 
             )
 
         )
-
-
 
 
 
@@ -133,7 +117,7 @@ class CustomerRepository:
 
             query=db.select(Customer).where(
 
-                Customer.is_active.is_(True)
+                Customer.is_deleted.is_(False)
 
             ),
 
@@ -228,9 +212,8 @@ class CustomerRepository:
         )
 
 
+
         return customers, total_records
-
-
 
 
 
@@ -252,10 +235,7 @@ class CustomerRepository:
         number = result.scalar()
 
 
-
         return f"CUS{number:06d}"
-
-
 
 
 
@@ -273,16 +253,16 @@ class CustomerRepository:
 
 
 
-
-
     @staticmethod
     def delete(
-        customer: Customer
+        customer: Customer,
+        deleted_by: int,
     ) -> None:
 
 
-        customer.is_active = False
+        customer.is_deleted = True
 
+        customer.deleted_by = deleted_by
 
         customer.deleted_at = datetime.now(
 
@@ -292,3 +272,41 @@ class CustomerRepository:
 
 
         db.session.commit()
+
+    @staticmethod
+    def restore(
+        customer: Customer
+    ) -> Customer:
+
+
+        customer.is_deleted = False
+
+        customer.deleted_by = None
+
+        customer.deleted_at = None
+
+
+        db.session.commit()
+
+        db.session.refresh(customer)
+
+
+        return customer    
+
+    @staticmethod
+    def get_deleted_by_id(
+        customer_id: int
+    ) -> Customer | None:
+
+
+        return db.session.scalar(
+
+            db.select(Customer).where(
+
+                Customer.id == customer_id,
+
+                Customer.is_deleted.is_(True),
+
+            )
+
+        )

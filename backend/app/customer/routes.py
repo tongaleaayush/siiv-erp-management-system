@@ -6,33 +6,26 @@ from marshmallow import ValidationError
 
 from flask_jwt_extended import jwt_required
 
-
 from app.auth.decorators import permission_required
-
 
 from app.customer.models import Customer
 
 from app.customer.constants import CUSTOMER_FILTER_FIELDS
 
-
 from app.core.validation.query import QueryValidator
-
 
 from app.customer.schemas import (
     CustomerCreateSchema,
-    CustomerResponseSchema,
     CustomerUpdateSchema,
+    CustomerResponseSchema,
 )
 
-
 from app.customer.service import CustomerService
-
 
 from app.utils.response import (
     success_response,
     error_response,
 )
-
 
 
 customer_ns = Namespace(
@@ -41,20 +34,15 @@ customer_ns = Namespace(
 )
 
 
-
 create_schema = CustomerCreateSchema()
 
 update_schema = CustomerUpdateSchema()
-
 
 response_schema = CustomerResponseSchema()
 
 response_schema_many = CustomerResponseSchema(
     many=True
 )
-
-
-
 
 
 # =====================================================
@@ -65,31 +53,22 @@ response_schema_many = CustomerResponseSchema(
 class CustomerListResource(Resource):
 
 
-    # =================================================
-    # GET ALL CUSTOMERS
-    # Permission: customer.view
-    # =================================================
-
     @jwt_required()
     @permission_required("customer.view")
     def get(self):
-
 
         search = request.args.get(
             "search"
         )
 
-
         sort_by = request.args.get(
             "sort_by"
         )
-
 
         sort_order = request.args.get(
             "sort_order",
             "asc"
         )
-
 
         page = request.args.get(
             "page",
@@ -97,13 +76,11 @@ class CustomerListResource(Resource):
             type=int
         )
 
-
         per_page = request.args.get(
             "per_page",
             10,
             type=int
         )
-
 
 
         try:
@@ -124,9 +101,7 @@ class CustomerListResource(Resource):
             )
 
 
-
         filters = {}
-
 
 
         ignored_fields = {
@@ -138,13 +113,10 @@ class CustomerListResource(Resource):
         }
 
 
-
         for key, value in request.args.items():
-
 
             if key in ignored_fields:
                 continue
-
 
 
             if "__" in key:
@@ -161,35 +133,26 @@ class CustomerListResource(Resource):
 
 
 
-            if field_name in CUSTOMER_FILTER_FIELDS:
+            if field_name not in CUSTOMER_FILTER_FIELDS:
+                continue
 
 
-                if field_name == "is_active":
 
-                    value = (
-                        value.lower()
-                        == "true"
+            column = getattr(
+                Customer,
+                field_name,
+                None
+            )
+
+
+            if column:
+
+                filters[
+                    (
+                        column,
+                        operator
                     )
-
-
-
-                column = getattr(
-                    Customer,
-                    field_name,
-                    None
-                )
-
-
-
-                if column:
-
-                    filters[
-                        (
-                            column,
-                            operator
-                        )
-                    ] = value
-
+                ] = value
 
 
 
@@ -212,7 +175,6 @@ class CustomerListResource(Resource):
         )
 
 
-
         total_pages = (
 
             (total_records + per_page - 1)
@@ -224,7 +186,6 @@ class CustomerListResource(Resource):
             else 0
 
         )
-
 
 
         return success_response(
@@ -260,9 +221,6 @@ class CustomerListResource(Resource):
 
 
 
-
-
-
     # =================================================
     # CREATE CUSTOMER
     # Permission: customer.create
@@ -272,20 +230,16 @@ class CustomerListResource(Resource):
     @permission_required("customer.create")
     def post(self):
 
-
         try:
-
 
             data = create_schema.load(
                 request.get_json()
             )
 
 
-
             customer = Customer(
                 **data
             )
-
 
 
             customer = (
@@ -295,25 +249,20 @@ class CustomerListResource(Resource):
             )
 
 
-
             return success_response(
 
                 message="Customer created successfully.",
 
-
                 data=response_schema.dump(
                     customer
                 ),
-
 
                 status_code=201,
 
             )
 
 
-
         except ValidationError as error:
-
 
             return error_response(
 
@@ -327,11 +276,6 @@ class CustomerListResource(Resource):
 
 
 
-
-
-
-
-
 # =====================================================
 # Single Customer
 # =====================================================
@@ -339,14 +283,8 @@ class CustomerListResource(Resource):
 @customer_ns.route(
     "/<int:customer_id>"
 )
-
 class CustomerResource(Resource):
 
-
-    # =================================================
-    # GET CUSTOMER BY ID
-    # Permission: customer.view
-    # =================================================
 
     @jwt_required()
     @permission_required("customer.view")
@@ -363,23 +301,17 @@ class CustomerResource(Resource):
         )
 
 
-
         return success_response(
 
             message="Customer fetched successfully.",
-
 
             data=response_schema.dump(
                 customer
             ),
 
-
             status_code=200,
 
         )
-
-
-
 
 
 
@@ -395,14 +327,11 @@ class CustomerResource(Resource):
         customer_id
     ):
 
-
         try:
-
 
             data = update_schema.load(
                 request.get_json()
             )
-
 
 
             customer = (
@@ -413,25 +342,20 @@ class CustomerResource(Resource):
             )
 
 
-
             return success_response(
 
                 message="Customer updated successfully.",
 
-
                 data=response_schema.dump(
                     customer
                 ),
-
 
                 status_code=200,
 
             )
 
 
-
         except ValidationError as error:
-
 
             return error_response(
 
@@ -445,12 +369,8 @@ class CustomerResource(Resource):
 
 
 
-
-
-
-
     # =================================================
-    # DELETE CUSTOMER
+    # DELETE CUSTOMER (Soft Delete)
     # Permission: customer.delete
     # =================================================
 
@@ -467,10 +387,49 @@ class CustomerResource(Resource):
         )
 
 
-
         return success_response(
 
             message="Customer deleted successfully.",
+
+            status_code=200,
+
+        )
+
+
+
+# =====================================================
+# Restore Customer
+# Permission: customer.update
+# =====================================================
+
+@customer_ns.route(
+    "/<int:customer_id>/restore"
+)
+class CustomerRestoreResource(Resource):
+
+
+    @jwt_required()
+    @permission_required("customer.update")
+    def post(
+        self,
+        customer_id
+    ):
+
+
+        customer = (
+            CustomerService.restore_customer(
+                customer_id
+            )
+        )
+
+
+        return success_response(
+
+            message="Customer restored successfully.",
+
+            data=response_schema.dump(
+                customer
+            ),
 
             status_code=200,
 
