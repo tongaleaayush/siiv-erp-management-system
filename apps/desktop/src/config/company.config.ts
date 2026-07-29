@@ -5,7 +5,7 @@ export const companyConfig = {
 
 
   address:
-    "Office no. 1, 1st floor, Shivkrupa Industries, 28/31, Narhe-Dhayari road, Dhayari, Pune 411041",
+    "Office no.1, 1st floor, Shivkrupa Industries, 28/31, Narhe-Dhayari road, Dhayari, Pune 411041",
 
 
   gstNumber:
