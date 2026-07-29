@@ -62,6 +62,39 @@ export interface Invoice {
   shippingAddress: string;
 
 
+  billingGSTNumber?: string;
+
+
+  shippingGSTNumber?: string;
+
+
+
+
+  transportationMode?: string;
+
+
+  vehicleNumber?: string;
+
+
+  dateOfSupply?: string;
+
+
+  placeOfSupply?: string;
+
+
+  state?: string;
+
+
+  stateCode?: string;
+
+
+  poNumber?: string;
+
+
+  poDate?: string;
+
+
+
 
   items: InvoiceItem[];
 
@@ -70,52 +103,42 @@ export interface Invoice {
   subtotal: number;
 
 
-
   cgstRate?: number;
+
 
   cgstAmount?: number;
 
 
-
   sgstRate?: number;
+
 
   sgstAmount?: number;
 
 
-
   igstRate?: number;
+
 
   igstAmount?: number;
 
+
+  roundOff?: number;
 
 
   grandTotal: number;
 
 
 
-  status: InvoiceStatus;
-
-
-
-  vehicleNumber?: string;
-
-
-  poNumber?: string;
-
-
-  poDate?: string;
-
-    placeOfSupply?: string;
-
-  stateCode?: string;
-
-
   bankName?: string;
+
 
   accountNumber?: string;
 
+
   ifscCode?: string;
 
+
+
+  status: InvoiceStatus;
 
 
   createdAt: string;
