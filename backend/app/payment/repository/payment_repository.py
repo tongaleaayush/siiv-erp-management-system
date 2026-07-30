@@ -4,6 +4,7 @@ from app.payment.models import Payment
 
 class PaymentRepository:
 
+
     @staticmethod
     def create(
         payment: Payment,
@@ -17,6 +18,26 @@ class PaymentRepository:
 
         return payment
 
+
+
+    @staticmethod
+    def get_all() -> list[Payment]:
+
+        return list(
+
+            db.session.scalars(
+
+                db.select(Payment)
+                .order_by(
+                    Payment.id.desc()
+                )
+
+            )
+
+        )
+
+
+
     @staticmethod
     def get_by_id(
         payment_id: int,
@@ -24,13 +45,14 @@ class PaymentRepository:
 
         return db.session.scalar(
 
-            db.select(Payment).where(
-
-                Payment.id == payment_id,
-
+            db.select(Payment)
+            .where(
+                Payment.id == payment_id
             )
 
         )
+
+
 
     @staticmethod
     def get_by_invoice_id(
@@ -41,15 +63,19 @@ class PaymentRepository:
 
             db.session.scalars(
 
-                db.select(Payment).where(
-
-                    Payment.invoice_id == invoice_id,
-
+                db.select(Payment)
+                .where(
+                    Payment.invoice_id == invoice_id
+                )
+                .order_by(
+                    Payment.id.desc()
                 )
 
             )
 
         )
+
+
 
     @staticmethod
     def delete(
@@ -59,3 +85,14 @@ class PaymentRepository:
         db.session.delete(payment)
 
         db.session.commit()
+
+    @staticmethod
+    def update(
+        payment: Payment,
+    ) -> Payment:
+
+        db.session.commit()
+
+        db.session.refresh(payment)
+
+        return payment    
