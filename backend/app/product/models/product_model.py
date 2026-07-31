@@ -87,3 +87,9 @@ class Product(BaseModel):
         db.DateTime(timezone=True),
         nullable=True,
     )
+
+    inventory_transactions = db.relationship(
+        "InventoryTransaction",
+        backref="product",
+        lazy=True,
+    )

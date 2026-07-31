@@ -8,19 +8,19 @@ from flask_jwt_extended import jwt_required
 
 from app.auth.decorators import permission_required
 
-from app.customer.models import Customer
+from app.supplier.models import Supplier
 
-from app.customer.constants import CUSTOMER_FILTER_FIELDS
+from app.supplier.constants import SUPPLIER_FILTER_FIELDS
 
 from app.core.validation.query import QueryValidator
 
-from app.customer.schemas import (
-    CustomerCreateSchema,
-    CustomerUpdateSchema,
-    CustomerResponseSchema,
+from app.supplier.schemas import (
+    SupplierCreateSchema,
+    SupplierUpdateSchema,
+    SupplierResponseSchema,
 )
 
-from app.customer.service import CustomerService
+from app.supplier.service import SupplierService
 
 from app.utils.response import (
     success_response,
@@ -28,33 +28,34 @@ from app.utils.response import (
 )
 
 
-customer_ns = Namespace(
-    "customers",
-    description="Customer management operations",
+supplier_ns = Namespace(
+    "suppliers",
+    description="Supplier management operations",
 )
 
 
-create_schema = CustomerCreateSchema()
+create_schema = SupplierCreateSchema()
 
-update_schema = CustomerUpdateSchema()
+update_schema = SupplierUpdateSchema()
 
-response_schema = CustomerResponseSchema()
+response_schema = SupplierResponseSchema()
 
-response_schema_many = CustomerResponseSchema(
+response_schema_many = SupplierResponseSchema(
     many=True
 )
 
 
+
 # =====================================================
-# Customer List
+# Supplier List
 # =====================================================
 
-@customer_ns.route("")
-class CustomerListResource(Resource):
+@supplier_ns.route("")
+class SupplierListResource(Resource):
 
 
     @jwt_required()
-    @permission_required("customer.view")
+    @permission_required("supplier.view")
     def get(self):
 
         search = request.args.get(
@@ -108,7 +109,6 @@ class CustomerListResource(Resource):
 
         filters = {}
 
-
         ignored_fields = {
             "search",
             "sort_by",
@@ -118,10 +118,13 @@ class CustomerListResource(Resource):
         }
 
 
+
         for key, value in request.args.items():
+
 
             if key in ignored_fields:
                 continue
+
 
 
             if "__" in key:
@@ -138,13 +141,13 @@ class CustomerListResource(Resource):
 
 
 
-            if field_name not in CUSTOMER_FILTER_FIELDS:
+            if field_name not in SUPPLIER_FILTER_FIELDS:
                 continue
 
 
 
             column = getattr(
-                Customer,
+                Supplier,
                 field_name,
                 None
             )
@@ -161,8 +164,8 @@ class CustomerListResource(Resource):
 
 
 
-        customers, total_records = (
-            CustomerService.list_customers(
+        suppliers, total_records = (
+            SupplierService.list_suppliers(
 
                 search=search,
 
@@ -180,6 +183,7 @@ class CustomerListResource(Resource):
         )
 
 
+
         total_pages = (
 
             (total_records + per_page - 1)
@@ -193,13 +197,14 @@ class CustomerListResource(Resource):
         )
 
 
+
         return success_response(
 
-            message="Customers fetched successfully.",
+            message="Suppliers fetched successfully.",
 
 
             data=response_schema_many.dump(
-                customers
+                suppliers
             ),
 
 
@@ -226,12 +231,12 @@ class CustomerListResource(Resource):
 
 
 
-    # =================================================
-    # CREATE CUSTOMER
-    # =================================================
+    # =====================================================
+    # Create Supplier
+    # =====================================================
 
     @jwt_required()
-    @permission_required("customer.create")
+    @permission_required("supplier.create")
     def post(self):
 
         try:
@@ -241,24 +246,24 @@ class CustomerListResource(Resource):
             )
 
 
-            customer = Customer(
+            supplier = Supplier(
                 **data
             )
 
 
-            customer = (
-                CustomerService.create_customer(
-                    customer
+            supplier = (
+                SupplierService.create_supplier(
+                    supplier
                 )
             )
 
 
             return success_response(
 
-                message="Customer created successfully.",
+                message="Supplier created successfully.",
 
                 data=response_schema.dump(
-                    customer
+                    supplier
                 ),
 
                 status_code=201,
@@ -268,6 +273,7 @@ class CustomerListResource(Resource):
 
         except ValidationError as error:
 
+
             return error_response(
 
                 message="Validation failed.",
@@ -280,37 +286,38 @@ class CustomerListResource(Resource):
 
 
 
+
 # =====================================================
-# Single Customer
+# Single Supplier
 # =====================================================
 
-@customer_ns.route(
-    "/<int:customer_id>"
+@supplier_ns.route(
+    "/<int:supplier_id>"
 )
-class CustomerResource(Resource):
+class SupplierResource(Resource):
 
 
     @jwt_required()
-    @permission_required("customer.view")
+    @permission_required("supplier.view")
     def get(
         self,
-        customer_id
+        supplier_id
     ):
 
 
-        customer = (
-            CustomerService.get_customer_by_id(
-                customer_id
+        supplier = (
+            SupplierService.get_supplier_by_id(
+                supplier_id
             )
         )
 
 
         return success_response(
 
-            message="Customer fetched successfully.",
+            message="Supplier fetched successfully.",
 
             data=response_schema.dump(
-                customer
+                supplier
             ),
 
             status_code=200,
@@ -319,16 +326,17 @@ class CustomerResource(Resource):
 
 
 
-    # =================================================
-    # UPDATE CUSTOMER
-    # =================================================
+    # =====================================================
+    # Update Supplier
+    # =====================================================
 
     @jwt_required()
-    @permission_required("customer.update")
+    @permission_required("supplier.update")
     def put(
         self,
-        customer_id
+        supplier_id
     ):
+
 
         try:
 
@@ -337,9 +345,9 @@ class CustomerResource(Resource):
             )
 
 
-            customer = (
-                CustomerService.update_customer(
-                    customer_id,
+            supplier = (
+                SupplierService.update_supplier(
+                    supplier_id,
                     data
                 )
             )
@@ -347,10 +355,10 @@ class CustomerResource(Resource):
 
             return success_response(
 
-                message="Customer updated successfully.",
+                message="Supplier updated successfully.",
 
                 data=response_schema.dump(
-                    customer
+                    supplier
                 ),
 
                 status_code=200,
@@ -360,6 +368,7 @@ class CustomerResource(Resource):
 
         except ValidationError as error:
 
+
             return error_response(
 
                 message="Validation failed.",
@@ -372,28 +381,26 @@ class CustomerResource(Resource):
 
 
 
-    # =================================================
-    # DELETE CUSTOMER
-    # =================================================
+    # =====================================================
+    # Delete Supplier
+    # =====================================================
 
     @jwt_required()
-    @permission_required("customer.delete")
+    @permission_required("supplier.delete")
     def delete(
         self,
-        customer_id
+        supplier_id
     ):
 
 
-        CustomerService.delete_customer(
-            customer_id
+        SupplierService.delete_supplier(
+            supplier_id
         )
 
 
         return success_response(
 
-            message="Customer deleted successfully.",
-
-            data=None,
+            message="Supplier deleted successfully.",
 
             status_code=200,
 
@@ -401,37 +408,38 @@ class CustomerResource(Resource):
 
 
 
+
 # =====================================================
-# Restore Customer
+# Restore Supplier
 # =====================================================
 
-@customer_ns.route(
-    "/<int:customer_id>/restore"
+@supplier_ns.route(
+    "/<int:supplier_id>/restore"
 )
-class CustomerRestoreResource(Resource):
+class SupplierRestoreResource(Resource):
 
 
     @jwt_required()
-    @permission_required("customer.update")
+    @permission_required("supplier.update")
     def post(
         self,
-        customer_id
+        supplier_id
     ):
 
 
-        customer = (
-            CustomerService.restore_customer(
-                customer_id
+        supplier = (
+            SupplierService.restore_supplier(
+                supplier_id
             )
         )
 
 
         return success_response(
 
-            message="Customer restored successfully.",
+            message="Supplier restored successfully.",
 
             data=response_schema.dump(
-                customer
+                supplier
             ),
 
             status_code=200,

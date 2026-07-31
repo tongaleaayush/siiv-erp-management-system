@@ -1,0 +1,1 @@
+from app.inventory.models import InventoryTransaction
