@@ -98,47 +98,112 @@ const ViewCustomerDialog = ({
           />
         </section>
 
-       {/* Address */}
+     {/* Billing Address */}
+
 <section>
+
   <h3 className="mb-3 text-lg font-semibold">
-    Address Information
+    Billing Address
   </h3>
+
 
   <InfoRow
     label="Country"
-    value={customer.country}
+    value={customer.billingCountry}
   />
+
 
   <InfoRow
     label="State"
-    value={customer.state}
+    value={customer.billingState}
   />
+
 
   <InfoRow
     label="City"
-    value={customer.city}
+    value={customer.billingCity}
   />
+
 
   <InfoRow
     label="Postal Code"
-    value={customer.postalCode}
+    value={customer.billingPostalCode}
   />
+
 
   <InfoRow
     label="Address Line 1"
-    value={customer.addressLine1}
+    value={customer.billingAddressLine1}
   />
+
 
   <InfoRow
     label="Address Line 2"
     value={
-      customer.addressLine2 || (
+      customer.billingAddressLine2 || (
         <span className="text-muted-foreground">
           -
         </span>
       )
     }
   />
+
+</section>
+
+
+
+
+
+{/* Shipping Address */}
+
+<section>
+
+  <h3 className="mb-3 text-lg font-semibold">
+    Shipping Address
+  </h3>
+
+
+  <InfoRow
+    label="Country"
+    value={customer.shippingCountry}
+  />
+
+
+  <InfoRow
+    label="State"
+    value={customer.shippingState}
+  />
+
+
+  <InfoRow
+    label="City"
+    value={customer.shippingCity}
+  />
+
+
+  <InfoRow
+    label="Postal Code"
+    value={customer.shippingPostalCode}
+  />
+
+
+  <InfoRow
+    label="Address Line 1"
+    value={customer.shippingAddressLine1}
+  />
+
+
+  <InfoRow
+    label="Address Line 2"
+    value={
+      customer.shippingAddressLine2 || (
+        <span className="text-muted-foreground">
+          -
+        </span>
+      )
+    }
+  />
+
 </section>
 
         {/* Business */}

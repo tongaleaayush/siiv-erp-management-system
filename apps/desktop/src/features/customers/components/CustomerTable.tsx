@@ -37,13 +37,13 @@ const CustomerTable = ({
         customer.companyName
           .toLowerCase()
           .includes(query) ||
-        customer.contactPerson
+        (customer.contactPerson ?? "-")
           .toLowerCase()
           .includes(query) ||
         customer.phone
           .toLowerCase()
           .includes(query) ||
-        customer.city
+        (customer.billingCity ?? "-")
           .toLowerCase()
           .includes(query);
 

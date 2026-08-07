@@ -72,7 +72,7 @@ export const customerExportColumns:
     accessor: (
       customer
     ) =>
-      customer.country,
+      customer.billingCountry,
   },
 
 
@@ -82,7 +82,7 @@ export const customerExportColumns:
     accessor: (
       customer
     ) =>
-      customer.state,
+      customer.billingState,
   },
 
 
@@ -92,7 +92,7 @@ export const customerExportColumns:
     accessor: (
       customer
     ) =>
-      customer.city,
+      customer.billingCity,
   },
 
 ];

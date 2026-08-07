@@ -1,4 +1,4 @@
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo2.png";
 
 interface BrandProps {
   collapsed?: boolean;
@@ -6,17 +6,17 @@ interface BrandProps {
 
 const Brand = ({ collapsed = false }: BrandProps) => {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <img
         src={logo}
         alt="SIIV Innovations"
-        className="h-12 w-12 object-contain"
+        className="h-25  w-25 object-contain"
       />
 
       {!collapsed && (
         <div>
-          <h1 className="text-xl font-bold tracking-wide text-white">
-            SIIV ERP
+          <h1 className="text-xl font-serif tracking-wide text-white">
+            SIIV Invoice
           </h1>
 
           <p className="text-sm text-slate-400">

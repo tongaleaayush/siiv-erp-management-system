@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+/* Hide scrollbar but keep scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+
+
+@keyframes dialogIn {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(20px)
+      scale(0.96);
+
+  }
+
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+
+  }
+
+}
+
+
+
+.animate-fadeIn {
+
+  animation:
+    fadeIn
+    0.2s
+    ease-out;
+
+}
+
+
+
+.animate-dialogIn {
+
+  animation:
+    dialogIn
+    0.25s
+    ease-out;
+
+}
+
+/* Remove number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+
+  -webkit-appearance: none;
+
+  margin: 0;
+
+}
+
+
+input[type="number"] {
+
+  -moz-appearance: textfield;
+
+}

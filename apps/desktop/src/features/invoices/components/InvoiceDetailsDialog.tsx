@@ -1219,33 +1219,41 @@ Download PDF
 
           <ul
 
-            className="
-              mt-2
-              list-disc
-              pl-5
-              text-sm
-              text-slate-600
-            "
+  className="
+    mt-2
+    list-disc
+    pl-5
+    text-sm
+    text-slate-600
+  "
 
-          >
-
-
-            <li>
-              Payment Against Delivery.
-            </li>
+>
 
 
-            <li>
-              Material received in good condition.
-            </li>
+  <li>
+    {
+      invoice.paymentTerm || 
+      "Payment Against Delivery."
+    }
+
+  </li>
 
 
-            <li>
-              Rejection shall be conveyed within a week of time after receiving material.
-            </li>
+  <li>
+
+    Material received in good condition.
+
+  </li>
 
 
-          </ul>
+  <li>
+
+    Rejection shall be conveyed within a week of time after receiving material.
+
+  </li>
+
+
+</ul>
 
 
 

@@ -25,44 +25,7 @@ export const drawPartyDetails = ({
 
   const rightX = 108;
 
-  const boxWidth = 88;
-
   const boxHeight = 38;
-
-
-
-  /*
-  ===============================
-      DRAW BOXES
-  ===============================
-  */
-
-
-  doc.rect(
-
-    leftX,
-
-    y,
-
-    boxWidth,
-
-    boxHeight
-
-  );
-
-
-
-  doc.rect(
-
-    rightX,
-
-    y,
-
-    boxWidth,
-
-    boxHeight
-
-  );
 
 
 
@@ -90,11 +53,11 @@ export const drawPartyDetails = ({
 
   doc.text(
 
-    "BILL TO",
+    "Billing Address:",
 
-    leftX + 4,
+    leftX + 2,
 
-    y + 7
+    y + 2.2
 
   );
 
@@ -102,11 +65,11 @@ export const drawPartyDetails = ({
 
   doc.text(
 
-    "SHIP TO",
+    "Shipping Address:",
 
-    rightX + 4,
+    rightX,
 
-    y + 7
+    y + 2.2
 
   );
 
@@ -205,9 +168,9 @@ export const drawPartyDetails = ({
 
     billingLines,
 
-    leftX + 4,
+    leftX+2,
 
-    y + 14
+    y + 7.5
 
   );
 
@@ -218,12 +181,13 @@ export const drawPartyDetails = ({
 
     shippingLines,
 
-    rightX + 4,
+    rightX ,
 
-    y + 14
+    y + 7.5
 
   );
 
+ 
 
 
 

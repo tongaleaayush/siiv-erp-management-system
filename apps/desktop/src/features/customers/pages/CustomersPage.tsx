@@ -96,10 +96,10 @@ const CustomersPage = () => {
           customer.companyName
             .toLowerCase()
             .includes(query) ||
-          customer.contactPerson
+          (customer.contactPerson ?? "-")
             .toLowerCase()
             .includes(query) ||
-          customer.email
+          (customer.email ?? "-")
             .toLowerCase()
             .includes(query) ||
           customer.phone
@@ -114,9 +114,7 @@ const CustomersPage = () => {
       customers,
       search,
     ]);
-
-
-
+  
   const [
     nextCustomerCode,
     setNextCustomerCode,
@@ -164,23 +162,42 @@ const CustomersPage = () => {
       gstNumber:
         customerData.gstNumber,
 
-      addressLine1:
-        customerData.addressLine1,
+     billingAddressLine1:
+customerData.billingAddressLine1,
 
-      addressLine2:
-        customerData.addressLine2,
+billingAddressLine2:
+customerData.billingAddressLine2,
 
-      city:
-        customerData.city,
+billingCity:
+customerData.billingCity,
 
-      state:
-        customerData.state,
+billingState:
+customerData.billingState,
 
-      country:
-        customerData.country,
+billingCountry:
+customerData.billingCountry,
 
-      postalCode:
-        customerData.postalCode,
+billingPostalCode:
+customerData.billingPostalCode,
+
+
+shippingAddressLine1:
+customerData.shippingAddressLine1,
+
+shippingAddressLine2:
+customerData.shippingAddressLine2,
+
+shippingCity:
+customerData.shippingCity,
+
+shippingState:
+customerData.shippingState,
+
+shippingCountry:
+customerData.shippingCountry,
+
+shippingPostalCode:
+customerData.shippingPostalCode,
 
       isActive:
         true,
@@ -194,12 +211,14 @@ const CustomersPage = () => {
     };
 
 
-    setCustomers(
-      (prev) => [
-        newCustomer,
-        ...prev,
-      ]
-    );
+   customerService.createCustomer(
+  newCustomer
+);
+
+
+setCustomers(
+  customerService.getCustomers()
+);
 
 
     setIsAddCustomerDialogOpen(false);
@@ -222,36 +241,80 @@ const CustomersPage = () => {
         .split("T")[0];
 
 
-    setCustomers(
-      (prev) =>
-        prev.map(
-          (customer) =>
-            customer.id === selectedCustomer.id
-              ? {
-                  ...customer,
+   const updatedCustomer: Customer = {
+  ...selectedCustomer,
 
-                  companyName:
-                    customerData.companyName,
+  companyName:
+    customerData.companyName,
 
-                  contactPerson:
-                    customerData.contactPerson,
+  contactPerson:
+    customerData.contactPerson,
 
-                  email:
-                    customerData.email,
+  email:
+    customerData.email,
 
-                  phone:
-                    `${customerData.countryCode} ${customerData.phone}`,
+  phone:
+    `${customerData.countryCode} ${customerData.phone}`,
 
-                  gstNumber:
-                    customerData.gstNumber,
+  gstNumber:
+    customerData.gstNumber,
 
-                  updatedAt:
-                    today,
 
-                }
-              : customer
-        )
-    );
+  // Billing Address
+
+  billingAddressLine1:
+    customerData.billingAddressLine1,
+
+  billingAddressLine2:
+    customerData.billingAddressLine2,
+
+  billingCity:
+    customerData.billingCity,
+
+  billingState:
+    customerData.billingState,
+
+  billingCountry:
+    customerData.billingCountry,
+
+  billingPostalCode:
+    customerData.billingPostalCode,
+
+
+  // Shipping Address
+
+  shippingAddressLine1:
+    customerData.shippingAddressLine1,
+
+  shippingAddressLine2:
+    customerData.shippingAddressLine2,
+
+  shippingCity:
+    customerData.shippingCity,
+
+  shippingState:
+    customerData.shippingState,
+
+  shippingCountry:
+    customerData.shippingCountry,
+
+  shippingPostalCode:
+    customerData.shippingPostalCode,
+
+
+  updatedAt:
+    today,
+};
+
+
+customerService.updateCustomer(
+  updatedCustomer
+);
+
+
+setCustomers(
+  customerService.getCustomers()
+);
 
 
     setIsEditCustomerDialogOpen(false);

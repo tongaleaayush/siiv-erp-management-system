@@ -13,16 +13,7 @@ export const drawHeader = ({
   startY,
   pageWidth,
 }: PdfSectionProps) => {
-  /*
-  ===============================
-      OUTER PAGE BORDER
-  ===============================
-  */
-  const pageHeight = doc.internal.pageSize.getHeight();
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.3);
-  doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-
+ 
   let y = startY;
 
   /*

@@ -29,8 +29,8 @@ title={
           <PanelLeft className="h-5 w-5 text-slate-700" />
         </button>
 
-        <h1 className="text-xl font-semibold text-slate-800">
-          SIIV ERP
+        <h1 className="text-xl font-serif text-slate-800">
+          SIIV Invoice Management System
         </h1>
       </div>
 

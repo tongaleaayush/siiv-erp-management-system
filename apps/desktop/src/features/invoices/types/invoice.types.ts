@@ -34,6 +34,7 @@ export interface InvoiceItem {
 
 
 
+
 export interface Invoice {
 
 
@@ -56,25 +57,26 @@ export interface Invoice {
   customerGSTNumber: string;
 
 
-  billingAddress: string;
 
+  // Address Details
+
+  billingAddress: string;
 
   shippingAddress: string;
 
 
-  billingGSTNumber?: string;
 
+  billingGSTNumber?: string;
 
   shippingGSTNumber?: string;
 
 
 
+  // Supply Details
 
   transportationMode?: string;
 
-
   vehicleNumber?: string;
-
 
   dateOfSupply?: string;
 
@@ -82,41 +84,48 @@ export interface Invoice {
   placeOfSupply?: string;
 
 
-  state?: string;
+  // State Details
 
+  state?: string;
 
   stateCode?: string;
 
 
-  poNumber?: string;
 
+  billingState?: string;
+
+  shippingState?: string;
+
+
+
+  poNumber?: string;
 
   poDate?: string;
 
 
 
+  // Items
 
   items: InvoiceItem[];
 
 
+
+  // Amount Details
 
   subtotal: number;
 
 
   cgstRate?: number;
 
-
   cgstAmount?: number;
 
 
   sgstRate?: number;
 
-
   sgstAmount?: number;
 
 
   igstRate?: number;
-
 
   igstAmount?: number;
 
@@ -128,21 +137,23 @@ export interface Invoice {
 
 
 
+  // Bank Details
+
   bankName?: string;
 
-
   accountNumber?: string;
-
 
   ifscCode?: string;
 
 
 
+  // Status
+
   status: InvoiceStatus;
 
 
-  createdAt: string;
 
+  createdAt: string;
 
   updatedAt: string;
 
