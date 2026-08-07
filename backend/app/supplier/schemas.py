@@ -2,10 +2,10 @@ from marshmallow import Schema, fields, validate
 
 
 # =====================================================
-# Customer Create Schema
+# Supplier Create Schema
 # =====================================================
 
-class CustomerCreateSchema(Schema):
+class SupplierCreateSchema(Schema):
 
     name = fields.String(
         required=True,
@@ -16,7 +16,7 @@ class CustomerCreateSchema(Schema):
     )
 
 
-    customer_type = fields.String(
+    supplier_type = fields.String(
         load_default="BUSINESS",
         validate=validate.OneOf(
             [
@@ -28,7 +28,7 @@ class CustomerCreateSchema(Schema):
 
 
     email = fields.Email(
-        required=True,
+        allow_none=True,
     )
 
 
@@ -54,9 +54,9 @@ class CustomerCreateSchema(Schema):
     )
 
 
-    # =================================================
+    # ==============================
     # Billing Address
-    # =================================================
+    # ==============================
 
     billing_address_line_1 = fields.String(
         allow_none=True,
@@ -106,9 +106,9 @@ class CustomerCreateSchema(Schema):
     )
 
 
-    # =================================================
+    # ==============================
     # Shipping Address
-    # =================================================
+    # ==============================
 
     shipping_address_line_1 = fields.String(
         allow_none=True,
@@ -173,10 +173,10 @@ class CustomerCreateSchema(Schema):
 
 
 # =====================================================
-# Customer Update Schema
+# Supplier Update Schema
 # =====================================================
 
-class CustomerUpdateSchema(Schema):
+class SupplierUpdateSchema(Schema):
 
     name = fields.String(
         required=False,
@@ -187,7 +187,7 @@ class CustomerUpdateSchema(Schema):
     )
 
 
-    customer_type = fields.String(
+    supplier_type = fields.String(
         required=False,
         validate=validate.OneOf(
             [
@@ -200,6 +200,7 @@ class CustomerUpdateSchema(Schema):
 
     email = fields.Email(
         required=False,
+        allow_none=True,
     )
 
 
@@ -223,8 +224,6 @@ class CustomerUpdateSchema(Schema):
         allow_none=True,
     )
 
-
-    # Billing Address
 
     billing_address_line_1 = fields.String(
         required=False,
@@ -260,8 +259,6 @@ class CustomerUpdateSchema(Schema):
         allow_none=True,
     )
 
-
-    # Shipping Address
 
     shipping_address_line_1 = fields.String(
         required=False,
@@ -301,9 +298,6 @@ class CustomerUpdateSchema(Schema):
     gst_number = fields.String(
         required=False,
         allow_none=True,
-        validate=validate.Length(
-            equal=15,
-        ),
     )
 
 
@@ -314,20 +308,22 @@ class CustomerUpdateSchema(Schema):
 
 
 # =====================================================
-# Customer Response Schema
+# Supplier Response Schema
 # =====================================================
 
-class CustomerResponseSchema(Schema):
+class SupplierResponseSchema(Schema):
 
     id = fields.Integer()
 
-    customer_code = fields.String()
+    supplier_code = fields.String()
 
     name = fields.String()
 
-    customer_type = fields.String()
+    supplier_type = fields.String()
 
-    email = fields.Email()
+    email = fields.Email(
+        allow_none=True,
+    )
 
     phone = fields.String()
 
@@ -339,8 +335,6 @@ class CustomerResponseSchema(Schema):
         allow_none=True,
     )
 
-
-    # Billing Address
 
     billing_address_line_1 = fields.String(
         allow_none=True,
@@ -364,8 +358,6 @@ class CustomerResponseSchema(Schema):
         allow_none=True,
     )
 
-
-    # Shipping Address
 
     shipping_address_line_1 = fields.String(
         allow_none=True,
@@ -394,7 +386,9 @@ class CustomerResponseSchema(Schema):
         allow_none=True,
     )
 
+
     is_active = fields.Boolean()
+
 
     created_at = fields.DateTime()
 

@@ -5,6 +5,9 @@ import app.customer
 import app.product
 import app.invoice
 import app.payment
+import app.inventory
+import app.supplier
+
 
 from config import DevelopmentConfig
 
