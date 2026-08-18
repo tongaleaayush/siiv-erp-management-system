@@ -3,11 +3,7 @@ import { storage } from "@/utils/storage/storage";
 
 interface SerialCounter {
 
-  [productId: string]: {
-
-    [year: string]: number;
-
-  };
+  [year: string]: number;
 
 }
 
@@ -117,23 +113,13 @@ export const generateSerialNumbers = (
 
 
 
-  if (
-    !counters[productId]
-  ) {
+ if (
+  !counters[yearCode]
+) {
 
-    counters[productId] = {};
+  counters[yearCode] = 1;
 
-  }
-
-
-
-  if (
-    !counters[productId][yearCode]
-  ) {
-
-    counters[productId][yearCode] = 1;
-
-  }
+}
 
 
 
@@ -149,9 +135,8 @@ export const generateSerialNumbers = (
 
 
 
-    const currentSerial =
-      counters[productId][yearCode];
-
+   const currentSerial =
+  counters[yearCode];
 
 
     const serialPart =
@@ -166,7 +151,7 @@ export const generateSerialNumbers = (
 
 
 
-    counters[productId][yearCode]++;
+    counters[yearCode]++;
 
   }
 

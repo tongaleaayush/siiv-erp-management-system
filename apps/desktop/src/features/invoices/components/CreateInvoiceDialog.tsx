@@ -2,6 +2,10 @@ import { useState, useEffect, useRef } from "react";
 
 import Select from "react-select";
 
+import {
+  generateSerialNumbers,
+} from "@/features/inventory/utils/serialGenerator";
+
 import { CalendarDays } from "lucide-react";
 
 import { DayPicker } from "react-day-picker";
@@ -512,6 +516,88 @@ const CreateInvoiceDialog = ({
       item.productId,
       item.quantity
     );
+const generatedSerialNumbers =
+  generateSerialNumbers(
+    item.productId,
+    item.quantity
+  );
+  generatedSerialNumbers.forEach(
+  (serialNumber, index) => {
+
+    let batchNumber =
+      consumedBatches[0]?.batchNumber || "";
+
+
+    let remaining =
+      index;
+
+
+    for (const batch of consumedBatches) {
+
+      if (remaining < batch.quantity) {
+
+        batchNumber =
+          batch.batchNumber;
+
+        break;
+
+      }
+
+      remaining -= batch.quantity;
+
+    }
+
+
+
+    inventoryService.addSerial({
+
+      id:
+        crypto.randomUUID(),
+
+
+      serialNumber,
+
+
+      productId:
+        item.productId,
+
+
+      productCode:
+        item.productCode,
+
+
+      productName:
+        item.productName,
+
+
+      batchNumber,
+
+
+      status:
+        "ISSUED",
+
+
+      issuedReferenceId:
+        invoice.id,
+
+
+      issuedDate:
+        new Date()
+          .toISOString()
+          .split("T")[0],
+
+
+      createdAt:
+        new Date()
+          .toISOString()
+          .split("T")[0],
+
+    });
+
+
+  }
+);
+
 
 
 
@@ -587,8 +673,7 @@ const CreateInvoiceDialog = ({
 
 
     serialNumbers:
-      [],
-
+  generatedSerialNumbers,
 
     referenceType:
       "INVOICE",
