@@ -11,6 +11,7 @@ import CustomersPage from "@/features/customers/pages/CustomersPage";
 import ProductsPage from "@/features/products/pages/ProductsPage";
 import InventoryPage from "@/features/inventory/pages/InventoryPage";
 import InvoicePage from "@/features/invoices/pages/InvoicePage";
+import SalesReportPage from "@/features/sales-report/pages/SalesReportPage";
 
 
 import MainLayout from "@/layouts/MainLayout";
@@ -159,6 +160,36 @@ export const protectedRoutes: RouteObject[] = [
         index: true,
 
         element: <InvoicePage />,
+
+      },
+
+    ],
+
+  },
+
+
+
+
+
+  {
+    path: "/sales-report",
+
+    element: (
+
+      <ProtectedRoute>
+
+        <MainLayout />
+
+      </ProtectedRoute>
+
+    ),
+
+    children: [
+
+      {
+        index: true,
+
+        element: <SalesReportPage />,
 
       },
 

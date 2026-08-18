@@ -8,7 +8,6 @@ import type {
 } from "../types/invoice.types";
 
 
-
 export const invoiceColumns:
   ColumnDef<Invoice>[] = [
 

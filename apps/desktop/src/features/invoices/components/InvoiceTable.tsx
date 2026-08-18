@@ -26,8 +26,9 @@ interface InvoiceTableProps {
 
   invoices: Invoice[];
 
-}
+  onCancelInvoice: (invoice: Invoice) => void;
 
+}
 
 
 
@@ -35,6 +36,8 @@ interface InvoiceTableProps {
 const InvoiceTable = ({
 
   invoices,
+
+  onCancelInvoice,
 
 }: InvoiceTableProps) => {
 
@@ -49,8 +52,8 @@ const InvoiceTable = ({
 
 
 
-  const columns =
-    invoiceColumns.map(
+ const columns =
+invoiceColumns.map(
       (column) => {
 
 
@@ -142,26 +145,25 @@ const InvoiceTable = ({
         selectedInvoice && (
 
 
-          <InvoiceDetailsDialog
+         <InvoiceDetailsDialog
 
+  open={
+    true
+  }
 
-            open={
-              true
-            }
+  invoice={
+    selectedInvoice
+  }
 
+  onClose={() =>
+    setSelectedInvoice(null)
+  }
 
-            invoice={
-              selectedInvoice
-            }
+  onCancelInvoice={
+    onCancelInvoice
+  }
 
-
-            onClose={() =>
-              setSelectedInvoice(null)
-            }
-
-
-          />
-
+/>
 
         )
       }

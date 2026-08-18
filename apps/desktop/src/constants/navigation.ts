@@ -35,10 +35,10 @@ export const navigation = [
     icon: FileText,
   },
   {
-    name: "Reports",
-    path: "/reports",
-    icon: BarChart3,
-  },
+  name: "Sales Report",
+  path: "/sales-report",
+  icon: BarChart3,
+},
   {
     name: "Settings",
     path: "/settings",

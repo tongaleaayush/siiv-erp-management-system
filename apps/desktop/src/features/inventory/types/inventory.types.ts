@@ -39,6 +39,7 @@ export interface InventoryTransaction {
 
   remarks: string;
 
+  createdBy: string;
 
   createdAt: string;
 
@@ -78,6 +79,8 @@ export interface InventoryBatch {
 
 
   createdAt: string;
+
+   createdTimestamp: number;
 
   updatedAt?: string;
 

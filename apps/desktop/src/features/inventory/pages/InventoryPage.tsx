@@ -23,7 +23,6 @@ import {
 
 import { stockService } from "../services/stock.service";
 
-import { fifoService } from "../services/fifo.service";
 
 import type {
   InventoryTransaction,
@@ -105,64 +104,6 @@ const InventoryPage = () => {
 
 
 
-  const testStockOut = () => {
-
-  try {
-
-
-    const transaction =
-      fifoService.stockOut({
-
-        productId:
-          "1",
-
-        productCode:
-          "PROD-0001",
-
-        productName:
-          "Con-Evator PCB 24VAC, with Bluetooth Device & Android Application Part No - 611095",
-
-        quantity:
-          10,
-
-      });
-
-
-
-    setTransactions(
-      (previous) => [
-        transaction,
-        ...previous,
-      ]
-    );
-
-
-
-    setSerialStock(
-      serialStockService.getSerialStock()
-    );
-
-
-
-    console.log(
-      transaction
-    );
-
-
-  }
-  catch(error) {
-
-
-    alert(
-      error instanceof Error
-        ? error.message
-        : "Insufficient stock"
-    );
-
-
-  }
-
-};
 
 
 
@@ -222,19 +163,7 @@ const InventoryPage = () => {
 
 
 
-          <Button
-
-            variant="outline"
-
-            onClick={
-              testStockOut
-            }
-
-          >
-
-            Test OUT
-
-          </Button>
+        
 
 
         </div>

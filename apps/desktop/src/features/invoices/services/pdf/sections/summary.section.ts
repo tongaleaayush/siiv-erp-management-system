@@ -40,7 +40,6 @@ export const drawSummary = ({
     ["SGST", formatCurrency(invoice.sgstAmount || 0)],
     ["IGST", formatCurrency(invoice.igstAmount || 0)],
     ["Total GST", formatCurrency(totalGST)],
-    ["Round off", formatCurrency(invoice.roundOff || 0)],
     ["Total Amount", formatCurrency(invoice.grandTotal)],
   ];
 

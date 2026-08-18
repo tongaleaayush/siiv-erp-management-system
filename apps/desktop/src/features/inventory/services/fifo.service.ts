@@ -353,7 +353,8 @@ class FIFOService {
 
       transactionType:
         "OUT",
-
+      createdBy:
+  "System User",
 
 
       quantity:

@@ -7,13 +7,10 @@ import {
   invoicePdfService,
 } from "../services/invoicePdf.service";
 
-import {
-  invoicePrintService,
-} from "../services/invoicePrint.service";
-
 import type {
   Invoice,
 } from "../types/invoice.types";
+
 
 
 import {
@@ -36,6 +33,8 @@ interface InvoiceDetailsDialogProps {
 
   invoice: Invoice;
 
+  onCancelInvoice: (invoice: Invoice) => void;
+
 }
 
 
@@ -50,15 +49,10 @@ const InvoiceDetailsDialog = ({
 
   invoice,
 
+  onCancelInvoice,
+
 }: InvoiceDetailsDialogProps) => {
 
-
-
-  if (!open) {
-
-    return null;
-
-  }
 
 
 
@@ -78,46 +72,56 @@ const InvoiceDetailsDialog = ({
   onClose={onClose}
 
 
-  footer={
+ footer={
 
-    <div
+  <div
 
-      className="
-        flex
-        justify-end
-        gap-3
-      "
+    className="
+      flex
+      justify-end
+      gap-3
+    "
+
+  >
+
+
+    {
+      invoice.status === "CONFIRMED" && (
+
+        <Button
+
+         onClick={() => {
+
+  onCancelInvoice(invoice);
+
+  onClose();
+
+}}
+
+        >
+
+          Cancel Invoice
+
+        </Button>
+
+      )
+    }
+
+
+
+    <Button
+
+      onClick={onClose}
 
     >
 
+      Close
 
-      <Button
-
-        onClick={onClose}
-
-      >
-
-        Close
-
-      </Button>
+    </Button>
 
 
 
-      <Button
-
-        onClick={() => {
-
-        invoicePrintService.printInvoice(
-  "invoice-print-area"
-);
-
-        }}
-
-      >
-
-        Print Invoice
-
-      </Button>
+      
 
 
 
@@ -133,7 +137,7 @@ onClick={() => {
 
 >
 
-Download PDF
+Print Invoice PDF
 
 </Button>
 
@@ -551,8 +555,142 @@ Download PDF
 
 
 
+{/* Transportation Details */}
+
+<div
+
+  className="
+    mt-8
+    rounded-lg
+    border
+    p-4
+  "
+
+>
+
+  <div
+
+    className="
+      grid
+      grid-cols-2
+      gap-6
+    "
+
+  >
 
 
+    {/* Left Side */}
+
+    <div>
+
+
+      <p>
+
+        <b>
+          Transportation Mode:
+        </b>
+
+        {" "}
+
+        {
+          invoice.transportationMode ||
+          "N/A"
+        }
+
+      </p>
+
+
+
+      <p className="mt-3">
+
+        <b>
+          Vehicle No:
+        </b>
+
+        {" "}
+
+        {
+          invoice.vehicleNumber ||
+          "N/A"
+        }
+
+      </p>
+
+
+
+      <p className="mt-3">
+
+        <b>
+          Date of Supply:
+        </b>
+
+        {" "}
+
+        {
+          invoice.dateOfSupply ||
+          "N/A"
+        }
+
+      </p>
+
+
+    </div>
+
+
+
+
+
+    {/* Right Side */}
+
+    <div>
+
+
+      <p>
+
+        <b>
+          Place of Supply:
+        </b>
+
+        {" "}
+
+        {
+          invoice.placeOfSupply ||
+          "N/A"
+        }
+
+      </p>
+
+
+
+
+      <p className="mt-3">
+
+        <b>
+          PO/DC No & Date:
+        </b>
+
+        {" "}
+
+        {
+          invoice.poNumber
+            ? `${invoice.poNumber}${
+                invoice.poDate
+                  ? ` | ${invoice.poDate}`
+                  : ""
+              }`
+            : "N/A"
+        }
+
+      </p>
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
 
 
 
@@ -1346,25 +1484,7 @@ Download PDF
 
 
 
-          <button
-
-            onClick={
-              onClose
-            }
-
-            className="
-              rounded-lg
-              bg-blue-600
-              px-6
-              py-2
-              text-white
-            "
-
-          >
-
-            Close
-
-          </button>
+      
 
 
 

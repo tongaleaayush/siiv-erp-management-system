@@ -47,6 +47,7 @@ export interface ProductFormRef {
 
 const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   ({ open, productCode, initialData }, ref) => {
+    const isEditMode = Boolean(initialData);
     const [formData, setFormData] =
       useState<ProductFormData>(
         createInitialFormData(productCode)
@@ -217,24 +218,36 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           </div>
         </section>
 
-        {/* Inventory */}
-        <section>
-          <h3 className="text-lg font-semibold text-slate-800">
-            Inventory
-          </h3>
+       {/* Inventory */}
+<section>
+  <h3 className="text-lg font-semibold text-slate-800">
+    Inventory
+  </h3>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Input
-              type="number"
-              label="Stock"
-              name="stock"
-              value={formData.stock}
-              onChange={handleInputChange}
-              placeholder="Enter Available Stock"
-              error={errors.stock}
-            />
-          </div>
-        </section>
+  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+
+    <Input
+      type="number"
+      label="Stock"
+      name="stock"
+      value={formData.stock}
+      onChange={
+        isEditMode
+          ? undefined
+          : handleInputChange
+      }
+      readOnly={isEditMode}
+      className={
+        isEditMode
+          ? "cursor-not-allowed bg-slate-100"
+          : ""
+      }
+      placeholder="Enter Available Stock"
+      error={errors.stock}
+    />
+
+  </div>
+</section>
       </div>
     );
   }

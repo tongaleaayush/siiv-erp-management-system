@@ -5,14 +5,8 @@ import type {
 } from "../types/inventory.types";
 
 
-
-
-
-
-
 export const inventoryColumns:
   ColumnDef<InventoryTransaction>[] = [
-
 
 
   {
@@ -23,14 +17,12 @@ export const inventoryColumns:
   },
 
 
-
   {
     accessorKey: "productCode",
 
     header: "Product Code",
 
   },
-
 
 
   {
@@ -41,14 +33,12 @@ export const inventoryColumns:
   },
 
 
-
   {
     accessorKey: "transactionType",
 
     header: "Type",
 
   },
-
 
 
   {
@@ -59,16 +49,14 @@ export const inventoryColumns:
   },
 
 
+  {
+    accessorKey:
+      "stockAfterTransaction",
 
- {
-  accessorKey:
-    "stockAfterTransaction",
+    header:
+      "Stock",
 
-  header:
-    "Stock",
-
-},
-
+  },
 
 
   {
@@ -91,6 +79,13 @@ export const inventoryColumns:
 
   },
 
+
+  {
+    accessorKey: "createdBy",
+
+    header: "Created By",
+
+  },
 
 
   {

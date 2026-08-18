@@ -136,6 +136,8 @@ export interface Invoice {
   grandTotal: number;
 
 
+  paymentTerm?: string;
+
 
   // Bank Details
 

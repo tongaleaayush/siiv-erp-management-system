@@ -91,6 +91,9 @@ class StockService {
       createdAt:
         today,
 
+        createdTimestamp:
+  Date.now(),
+
 
       updatedAt:
         today,
@@ -131,6 +134,9 @@ class StockService {
 
       transactionType:
         "IN",
+
+        createdBy:
+  "System User",
 
 
       quantity:

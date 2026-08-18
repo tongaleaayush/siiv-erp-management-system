@@ -81,9 +81,7 @@ export const drawInvoiceInfo = ({
 
   doc.text(
 
-    `GSTIN: ${
-      invoice.customerGSTNumber || "-"
-    }`,
+    `GSTIN: 27AJTPJ7789H1Z8`,
 
     leftX,
 
@@ -95,9 +93,7 @@ export const drawInvoiceInfo = ({
 
   doc.text(
 
-    `State: ${
-      invoice.state || "-"
-    }`,
+    `State: Maharashtra`,
 
     leftX,
 
@@ -109,9 +105,7 @@ export const drawInvoiceInfo = ({
 
   doc.text(
 
-    `State Code: ${
-      invoice.stateCode || "-"
-    }`,
+    `State Code: 27`,
 
     leftX,
 
@@ -148,7 +142,7 @@ export const drawInvoiceInfo = ({
   doc.text(
 
     `Vehicle No: ${
-      invoice.vehicleNumber || "-"
+      invoice.vehicleNumber || "N/A"
     }`,
 
     rightX,
