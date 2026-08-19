@@ -77,31 +77,29 @@ const getISOWeekNumber = (
 
 export const generateSerialNumbers = (
 
-  productId: string,
+  quantity: number,
 
-  quantity: number
+  invoiceDate: string
 
 ): string[] => {
 
 
 
-  const today =
-    new Date();
+ const invoiceDateObject =
+  new Date(invoiceDate);
 
 
-
-  const yearCode =
-    String(
-      today.getFullYear()
-    );
-
+const yearCode =
+  String(
+    invoiceDateObject.getFullYear()
+  );
 
 
-  const weekCode =
-    String(
-      getISOWeekNumber(today)
-    )
-    .padStart(2, "0");
+const weekCode =
+  String(
+    getISOWeekNumber(invoiceDateObject)
+  )
+  .padStart(2, "0");
 
 
 

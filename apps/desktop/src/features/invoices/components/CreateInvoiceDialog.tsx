@@ -518,8 +518,8 @@ const CreateInvoiceDialog = ({
     );
 const generatedSerialNumbers =
   generateSerialNumbers(
-    item.productId,
-    item.quantity
+    item.quantity,
+    invoiceDate
   );
   generatedSerialNumbers.forEach(
   (serialNumber, index) => {

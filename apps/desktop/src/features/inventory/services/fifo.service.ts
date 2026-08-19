@@ -147,11 +147,13 @@ class FIFOService {
 
 
 
-      const generatedSerialNumbers =
-        generateSerialNumbers(
-          payload.productId,
-          consume
-        );
+   const generatedSerialNumbers =
+  generateSerialNumbers(
+  consume,
+  new Date()
+    .toISOString()
+    .split("T")[0]
+);
 
 
 
